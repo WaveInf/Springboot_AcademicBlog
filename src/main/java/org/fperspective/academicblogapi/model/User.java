@@ -1,25 +1,47 @@
 package org.fperspective.academicblogapi.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.mongodb.lang.NonNull;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+
+@Document(collection = "users")
 public class User {
+
+    @Id
     private String userID;
+
     private String userName;
+
     private String fullName;
+
+    @Email
     private String email;
+
     private String campus;
-    private Avatar avatar;
+
+    private String avatarID;
+
+    @NotEmpty
     private String subjectID;
+    
     private String role;
+
+    @NonNull
     private boolean status;
     public User() {
     }
-    public User(String userID, String userName, String fullName, String email, String campus, Avatar avatar,
+    public User(String userID, String userName, String fullName, String email, String campus, String avatarID,
             String subjectID, String role, boolean status) {
         this.userID = userID;
         this.userName = userName;
         this.fullName = fullName;
         this.email = email;
         this.campus = campus;
-        this.avatar = avatar;
+        this.avatarID = avatarID;
         this.subjectID = subjectID;
         this.role = role;
         this.status = status;
@@ -54,11 +76,11 @@ public class User {
     public void setCampus(String campus) {
         this.campus = campus;
     }
-    public Avatar getAvatar() {
-        return avatar;
+    public String getAvatarID() {
+        return avatarID;
     }
-    public void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
+    public void setAvatar(String avatarID) {
+        this.avatarID = avatarID;
     }
     public String getSubjectID() {
         return subjectID;

@@ -1,12 +1,13 @@
 package org.fperspective.academicblogapi.model;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-@Document("blogs")
+
+@Document(collection = "blogs")
 public class Blog {
     @Id
     private String blogId;
@@ -17,14 +18,17 @@ public class Blog {
 
     private String uploadDate;
 
+    @NotEmpty
     private String userID;
 
+    @NotEmpty
     private String categoryID;
 
     private String subjectID;
 
     private String tagID;
 
+    @NotNull
     private boolean status;
     
     public Blog() {
