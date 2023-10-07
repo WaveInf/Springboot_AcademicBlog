@@ -29,4 +29,8 @@ public class BlogService {
         return blogRepository.findById(blogId).orElse(null);
     }
 
+    public void remove(String blogId) {
+        blogRepository.deleteById(blogId);
+    }
+
 }

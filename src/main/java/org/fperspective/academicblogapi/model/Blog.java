@@ -2,6 +2,7 @@ package org.fperspective.academicblogapi.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -24,9 +25,9 @@ public class Blog {
     @NotEmpty
     private String categoryID;
 
-    private String subjectID;
+    private String[] subjectID;
 
-    private String tagID;
+    private String[] tagID;
 
     @NotNull
     private boolean status;
@@ -35,7 +36,7 @@ public class Blog {
     }
 
     public Blog(String blogId, String blogTitle, String blogContent, String uploadDate, String userID,
-            String categoryID, String subjectID, String tagID, boolean status) {
+            String categoryID, String[] subjectID, String[] tagID, boolean status) {
         this.blogId = blogId;
         this.blogTitle = blogTitle;
         this.blogContent = blogContent;
@@ -95,19 +96,19 @@ public class Blog {
         this.categoryID = categoryID;
     }
 
-    public String getSubjectID() {
+    public String[] getSubjectID() {
         return subjectID;
     }
 
-    public void setSubjectID(String subjectID) {
+    public void setSubjectID(String[] subjectID) {
         this.subjectID = subjectID;
     }
 
-    public String getTagID() {
+    public String[] getTagID() {
         return tagID;
     }
 
-    public void setTagID(String tagID) {
+    public void setTagID(String[] tagID) {
         this.tagID = tagID;
     }
 

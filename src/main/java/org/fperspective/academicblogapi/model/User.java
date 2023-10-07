@@ -79,7 +79,7 @@ public class User {
     public String getAvatarID() {
         return avatarID;
     }
-    public void setAvatar(String avatarID) {
+    public void setAvatarID(String avatarID) {
         this.avatarID = avatarID;
     }
     public String getSubjectID() {
