@@ -1,11 +1,16 @@
 package org.fperspective.academicblogapi.model;
 
-public class Tag {
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document("tags")
+public class BTag {
+    @Id
     private String tagID;
     private String tagName;
-    public Tag() {
+    public BTag() {
     }
-    public Tag(String tagID, String tagName) {
+    public BTag(String tagID, String tagName) {
         this.tagID = tagID;
         this.tagName = tagName;
     }

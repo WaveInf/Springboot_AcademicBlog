@@ -1,6 +1,9 @@
 package org.fperspective.academicblogapi.model;
 
+import org.springframework.data.annotation.Id;
+
 public class Category {
+    @Id
     private String categoryID;
     private String categoryName;
     private boolean status;

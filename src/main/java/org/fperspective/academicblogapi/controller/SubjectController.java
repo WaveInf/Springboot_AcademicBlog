@@ -3,9 +3,8 @@ package org.fperspective.academicblogapi.controller;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.fperspective.academicblogapi.model.Blog;
-import org.fperspective.academicblogapi.model.User;
-import org.fperspective.academicblogapi.service.BlogService;
+import org.fperspective.academicblogapi.model.Subject;
+import org.fperspective.academicblogapi.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,19 +25,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @RestController
-@Tag(name = "Blog", description = "Blog Management API")
-@RequestMapping("/api/v1/blog")
+@Tag(name = "Subject", description = "Subject Management API")
+@RequestMapping("/api/v1/subject")
 @CrossOrigin
 @ApiResponses(value = {
-    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json") }),
+    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Subject.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
-public class BlogController {
-
+public class SubjectController {
+    
     @Autowired
-    private BlogService blogService;
+    private SubjectService subjectService;
 
     @Hidden
     @RequestMapping("/")
@@ -47,36 +45,30 @@ public class BlogController {
         response.sendRedirect("/swagger-ui.html");
     }
 
-    // private Map<String, Blog> blogDB = new HashMap<>(){{
-    //     put("1",new Blog("1", "test", "this is a test", "12/9/2023", "1","1", "1" , "1", true));
-    // }};
-
     @GetMapping("/show")
     @CrossOrigin
-    public Collection<Blog> get(){
-        return blogService.get();
+    public Collection<Subject> get(){
+        return subjectService.get();
     }
 
-    @GetMapping("/show/{blogId}")
+    @GetMapping("/show/{subjectId}")
     @CrossOrigin
-    public Blog get(@PathVariable String blogId) {
-        Blog blog = blogService.get(blogId);
-        if (blog == null)
+    public Subject get(@PathVariable String subjectId) {
+        Subject subject = subjectService.get(subjectId);
+        if (subject == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blog;
+        return subject;
     }
 
     @DeleteMapping("/delete/{id}")
     @CrossOrigin
-    public void delete(@PathVariable String blogId) {
-        blogService.remove(blogId);
+    public void delete(@PathVariable String subjectId) {
+        subjectService.remove(subjectId);
     }
 
     @PostMapping("/show")
     @CrossOrigin
-    public Blog save(@RequestBody Blog blog){
-        blog.setStatus(false);
-        return blogService.save(blog);
+    public Subject save(@RequestBody Subject subject){
+        return subjectService.save(subject);
     }
-    
 }
