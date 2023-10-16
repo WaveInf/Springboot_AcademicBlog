@@ -1,33 +1,25 @@
 package org.fperspective.academicblogapi.configuration;
 
-import java.util.UUID;
-
-import org.fperspective.academicblogapi.model.LoginProvider;
-import org.fperspective.academicblogapi.model.UserCredential;
+import java.util.List;
 import org.fperspective.academicblogapi.service.UserCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -36,14 +28,28 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+    @Value("${frontend_url}")
+    private String frontendUrl;
+
     @Bean
-    @Order(0)
+    @Order(1)
     SecurityFilterChain securityFilterChain (HttpSecurity http, UserCredentialService userCredentialService) throws Exception {
         return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(author -> {
-                author.requestMatchers("/api/v1").permitAll();                
+                author.requestMatchers("/api/v1/**").permitAll();                
                 author.anyRequest().authenticated();})
-                .oauth2Login(oc -> oc.userInfoEndpoint(ui -> ui.userService(userCredentialService.oauth2LoginHandler()).oidcUserService(userCredentialService.oidcLoginHandler())))
+                .oauth2Login(oc -> {
+                    oc.successHandler(oAuth2LoginSuccessHandler)
+                    .userInfoEndpoint(ui -> {
+                    ui
+                    .userService(userCredentialService.oauth2LoginHandler())
+                    .oidcUserService(userCredentialService.oidcLoginHandler());
+                    });})
                 .formLogin(Customizer.withDefaults())
                 .build();
     }
@@ -53,9 +59,22 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(frontendUrl));
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod(HttpMethod.POST);
+        configuration.addAllowedMethod(HttpMethod.OPTIONS);
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
+        return urlBasedCorsConfigurationSource;
+    }
 
     @Bean
-    @PostAuthorize(value = "")
     ApplicationListener<AuthenticationSuccessEvent> successLogger() {
         return event -> {
             log.info("success: {}", event.getAuthentication());

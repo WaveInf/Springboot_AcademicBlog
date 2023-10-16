@@ -2,9 +2,9 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.fperspective.academicblogapi.model.Blog;
-import org.fperspective.academicblogapi.model.User;
 import org.fperspective.academicblogapi.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,23 +47,28 @@ public class BlogController {
         response.sendRedirect("/swagger-ui.html");
     }
 
-    // private Map<String, Blog> blogDB = new HashMap<>(){{
-    //     put("1",new Blog("1", "test", "this is a test", "12/9/2023", "1","1", "1" , "1", true));
-    // }};
-
     @GetMapping("/show")
     @CrossOrigin
     public Collection<Blog> get(){
         return blogService.get();
     }
 
-    @GetMapping("/show/{blogId}")
+    @GetMapping("/show/{id}")
     @CrossOrigin
     public Blog get(@PathVariable String blogId) {
         Blog blog = blogService.get(blogId);
         if (blog == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blog;
+    }
+
+    @GetMapping("/search/{text}")
+    @CrossOrigin
+    public List<Blog> search(@PathVariable String text) {
+        List<Blog> blogs = blogService.search(text);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
     }
 
     @DeleteMapping("/delete/{id}")

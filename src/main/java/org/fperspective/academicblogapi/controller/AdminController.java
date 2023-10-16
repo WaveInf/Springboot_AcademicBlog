@@ -1,5 +1,7 @@
 package org.fperspective.academicblogapi.controller;
 
+import java.io.IOException;
+
 import org.fperspective.academicblogapi.model.Blog;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @Tag(name = "Admin", description = "Admin Management API")
@@ -19,5 +22,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class AdminController {
-    
+    @RequestMapping("/")
+    @CrossOrigin
+    public void redirect(HttpServletResponse response) throws IOException{
+        response.sendRedirect("/swagger-ui.html");
+    }
 }

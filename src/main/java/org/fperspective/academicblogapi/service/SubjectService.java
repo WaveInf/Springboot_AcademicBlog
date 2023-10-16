@@ -1,7 +1,6 @@
 package org.fperspective.academicblogapi.service;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import org.fperspective.academicblogapi.model.Subject;
 import org.fperspective.academicblogapi.repository.SubjectRepository;

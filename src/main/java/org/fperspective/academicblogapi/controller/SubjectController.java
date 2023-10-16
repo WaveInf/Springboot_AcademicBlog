@@ -51,7 +51,7 @@ public class SubjectController {
         return subjectService.get();
     }
 
-    @GetMapping("/show/{subjectId}")
+    @GetMapping("/show/{id}")
     @CrossOrigin
     public Subject get(@PathVariable String subjectId) {
         Subject subject = subjectService.get(subjectId);

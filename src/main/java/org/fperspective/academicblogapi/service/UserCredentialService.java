@@ -1,6 +1,5 @@
 package org.fperspective.academicblogapi.service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -9,7 +8,6 @@ import java.util.List;
 import org.fperspective.academicblogapi.model.LoginProvider;
 import org.fperspective.academicblogapi.model.UserCredential;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

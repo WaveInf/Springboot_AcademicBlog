@@ -1,21 +1,22 @@
 package org.fperspective.academicblogapi.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.repository.BlogRepository;
+import org.fperspective.academicblogapi.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class BlogService {
 
-    private final BlogRepository blogRepository;
+    @Autowired
+    private BlogRepository blogRepository;
 
-    public BlogService (@Autowired BlogRepository blogRepository) {
-        this.blogRepository = blogRepository;
-    }
+    @Autowired
+    private SearchRepository searchRepository;
 
     public Blog save(Blog blog){
         return blogRepository.save(blog);
@@ -31,6 +32,10 @@ public class BlogService {
 
     public void remove(String blogId) {
         blogRepository.deleteById(blogId);
+    }
+
+    public List<Blog> search(String text) {
+        return searchRepository.searchBlogByText(text);
     }
 
 }

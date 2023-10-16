@@ -2,10 +2,9 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
-import org.fperspective.academicblogapi.model.User;
-import org.fperspective.academicblogapi.service.UserService;
+import org.fperspective.academicblogapi.model.Category;
+import org.fperspective.academicblogapi.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,17 +26,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@Tag(name = "User", description = "User Management API")
-@RequestMapping("/api/v1/user")
+@Tag(name = "Category", description = "Category Management API")
+@RequestMapping("/api/v1/category")
 @CrossOrigin
 @ApiResponses(value = {
-    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = User.class), mediaType = "application/json") }),
+    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Category.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
-public class UserController {
-
+public class CategoryController {
+    
     @Autowired
-    private UserService userService;
+    private CategoryService categoryService;
 
     @Hidden
     @RequestMapping("/")
@@ -46,40 +45,31 @@ public class UserController {
         response.sendRedirect("/swagger-ui.html");
     }
 
-     @GetMapping("/show")
-     @CrossOrigin
-    public Collection<User> get(){
-        return userService.get();
+    @GetMapping("/show")
+    @CrossOrigin
+    public Collection<Category> get(){
+        return categoryService.get();
     }
 
     @GetMapping("/show/{id}")
     @CrossOrigin
-    
-    public User get(@PathVariable String userId) {
-        User user = userService.get(userId);
-        if (user == null)
+    public Category get(@PathVariable String categoryId) {
+        Category category = categoryService.get(categoryId);
+        if (category == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return user;
-    }
-
-    @GetMapping("/search/{text}")
-    @CrossOrigin
-    public List<User> search(@PathVariable String text) {
-        List<User> users = userService.search(text);
-        if (users == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return users;
+        return category;
     }
 
     @DeleteMapping("/delete/{id}")
     @CrossOrigin
-    public void delete(@PathVariable String userId) {
-        userService.remove(userId);
+    public void delete(@PathVariable String categoryId) {
+        categoryService.remove(categoryId);
     }
 
     @PostMapping("/show")
     @CrossOrigin
-    public User save(@RequestBody User user){
-        return userService.save(user);
+    public Category save(@RequestBody Category category){
+        category.setStatus(false);
+        return categoryService.save(category);
     }
 }

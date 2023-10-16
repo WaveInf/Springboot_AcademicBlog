@@ -2,7 +2,9 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
+import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +54,31 @@ public class TagController {
         return tagService.get();
     }
 
-    @GetMapping("/show/{tagId}")
+    @GetMapping("/show/{id}")
     @CrossOrigin
     public BTag get(@PathVariable String tagId) {
         BTag tag = tagService.get(tagId);
         if (tag == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return tag;
+    }
+
+    @GetMapping("/show/count")
+    @CrossOrigin
+    public List<BTag> search() {
+        List<BTag> tags = tagService.findMostUsedTag();
+        if (tags == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return tags;
+    }
+
+    @GetMapping("/show/count/num")
+    @CrossOrigin
+    public List<Integer> searchCount() {
+        List<Integer> count = tagService.findMostUsedTagCount();
+        if (count == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return count;
     }
 
     @DeleteMapping("/delete/{id}")
