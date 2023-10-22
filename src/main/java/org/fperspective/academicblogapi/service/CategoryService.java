@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.fperspective.academicblogapi.model.Category;
 import org.fperspective.academicblogapi.repository.CategoryRepository;
-import org.fperspective.academicblogapi.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,15 @@ public class CategoryService {
         return categoryRepository.findById(categoryId).orElse(null);
     }
 
-    public void remove(String categoryId) {
-        categoryRepository.deleteById(categoryId);
+    public Category remove(String categoryId) {
+        Category existingCategory = categoryRepository.findById(categoryId).get();
+        existingCategory.setStatus(false);
+        return categoryRepository.save(existingCategory);
+    }
+
+    public Category update(Category category) {
+        Category existingCategory = categoryRepository.findById(category.getCategoryId()).get();
+        existingCategory.setCategoryName(existingCategory.getCategoryName());
+        return categoryRepository.save(existingCategory);
     }
 }

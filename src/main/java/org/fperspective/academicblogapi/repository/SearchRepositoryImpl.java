@@ -2,24 +2,24 @@ package org.fperspective.academicblogapi.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
+import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators.Log;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.stereotype.Component;
 import org.bson.Document;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.bson.conversions.Bson;
-import java.util.concurrent.TimeUnit;
-
-import javax.print.Doc;
-
-import org.bson.Document;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.AggregateIterable;
 
 import com.mongodb.client.MongoClient;
@@ -27,97 +27,184 @@ import com.mongodb.client.MongoClient;
 @Component
 public class SearchRepositoryImpl implements SearchRepository {
 
-    @Autowired
-    MongoClient client;
+        @Autowired
+        MongoClient client;
 
-    @Autowired
-    MongoConverter converter;
+        @Autowired
+        MongoConverter converter;
 
-    @Override
-    public List<Blog> searchBlogByText(String text) {
+        @Override
+        // Blog search by blogName / tagName with autocorrect by 2 letters at 3rd index
+        public List<Blog> searchBlogByText(String text) {
 
-        final List<Blog> blogs = new ArrayList<>();
+                final List<Blog> blogs = new ArrayList<>();
 
-        MongoDatabase database = client.getDatabase("Main");
-        MongoCollection<Document> collection = database.getCollection("Blog");
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
-                new Document("index", "blog")
-                        .append("text",
-                                new Document("query", text)
-                                        .append("path", Arrays.asList("blogTitle", "btag.tagName"))
-                                        .append("fuzzy",
-                                new Document("maxEdits", 2L)
-                                        .append("prefixLength", 3L)))),
-                new Document("$sort",
-                        new Document("blogTitle", 1L)),
-                new Document("$limit", 5L)));
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                                new Document("query", text)
+                                                                                .append("path", Arrays.asList(
+                                                                                                "blogTitle",
+                                                                                                "btag.tagName"))
+                                                                                .append("fuzzy",
+                                                                                                new Document("maxEdits",
+                                                                                                                2L)
+                                                                                                                .append("prefixLength",
+                                                                                                                                3L)))),
+                                new Document("$sort",
+                                                new Document("blogTitle", 1L)),
+                                new Document("$limit", 5L)));
 
-        result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
+                result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
 
-        return blogs;
-    }
+                return blogs;
+        }
 
-    @Override
-    public List<User> searchUserByText(String text) {
+        @Override
+        // Blog search by categoryName with autocorrect by 2 letters at 3rd index
+        public List<Blog> searchBlogByCategory(String category) {
 
-        final List<User> users = new ArrayList<>();
+                final List<Blog> blogs = new ArrayList<>();
 
-        MongoDatabase database = client.getDatabase("Main");
-        MongoCollection<Document> collection = database.getCollection("User");
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
-                new Document("index", "user")
-                        .append("text",
-                                new Document("query", text)
-                                        .append("path", Arrays.asList("userName"))
-                                        .append("fuzzy",
-                                new Document("maxEdits", 2L)
-                                        .append("prefixLength", 3L)))),
-                new Document("$sort",
-                        new Document("userName", 1L)),
-                new Document("$limit", 5L)));
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                                new Document("query", category)
+                                                                                .append("path", Arrays.asList(
+                                                                                                "categoryName"))
+                                                                                .append("fuzzy",
+                                                                                                new Document("maxEdits",
+                                                                                                                2L)
+                                                                                                                .append("prefixLength",
+                                                                                                                                3L)))),
+                                new Document("$sort",
+                                                new Document("blogTitle", 1L)),
+                                new Document("$limit", 5L)));
 
-        result.forEach((doc) -> users.add(converter.read(User.class, doc)));
+                result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
 
-        return users;
-    }
+                return blogs;
+        }
 
-    @Override
-    public List<BTag> findMostUsedTag() {
-        final List<BTag> tags = new ArrayList<>();
+        @Override
+        // User search by userName with autocorrect by 2 letters at 3rd index
+        public List<Credential> searchUserByText(String text) {
 
-        final List<Integer> count = new ArrayList<>();
+                final List<Credential> users = new ArrayList<>();
 
-        MongoDatabase database = client.getDatabase("Main");
-        MongoCollection<Document> collection = database.getCollection("Blog");
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$unwind",
-                new Document("path", "$btag")),
-                new Document("$sortByCount", "$btag.tagName")));
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("User");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "credential")
+                                                .append("text",
+                                                                new Document("query", text)
+                                                                                .append("path", Arrays
+                                                                                                .asList("username"))
+                                                                                .append("fuzzy",
+                                                                                                new Document("maxEdits",
+                                                                                                                1L)
+                                                                                                                .append("prefixLength",
+                                                                                                                                3L)))),
+                                new Document("$sort",
+                                                new Document("username", 1L)),
+                                new Document("$limit", 5L)));
 
-        result.forEach((doc) -> tags.add(converter.read(BTag.class, doc)));
+                result.forEach((doc) -> users.add(converter.read(Credential.class, doc)));
 
-        result.forEach((doc) ->
-            count.add(doc.getInteger("count"))
-        );
+                return users;
+        }
 
-        return tags;        
-    }
+        @Override
+        // User search by userName with autocorrect by 2 letters at 3rd index
+        public List<Credential> searchUserByCampus(String campus) {
 
-    @Override
-    public List<Integer> findMostUsedTagCount() {
-        final List<Integer> count = new ArrayList<>();
+                final List<Credential> users = new ArrayList<>();
 
-        MongoDatabase database = client.getDatabase("Main");
-        MongoCollection<Document> collection = database.getCollection("Blog");
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$unwind",
-                new Document("path", "$btag")),
-                new Document("$sortByCount", "$btag")));
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("User");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "credential")
+                                                .append("text",
+                                                                new Document("query", campus)
+                                                                                .append("path", Arrays
+                                                                                                .asList("campus"))
+                                                                                .append("fuzzy",
+                                                                                                new Document("maxEdits",
+                                                                                                                2L)
+                                                                                                                .append("prefixLength",
+                                                                                                                                3L)))),
+                                new Document("$sort",
+                                                new Document("userName", 1L)),
+                                new Document("$limit", 5L)));
 
-        result.forEach((doc) ->
-            count.add(doc.getInteger("count"))
-        );
+                result.forEach((doc) -> users.add(converter.read(Credential.class, doc)));
 
-        return count;        
-    }
+                return users;
+        }
 
+        @Override
+        // Query to find most used tags and its used count
+        public Map<BTag, Integer> findMostUsedTag() {
+
+                final Map<BTag, Integer> tagList = new HashMap<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$unwind",
+                                new Document("path", "$btag").append("preserveNullAndEmptyArrays", false)),
+                                new Document("$sortByCount", "$btag"),
+                                new Document("$project",
+                                                new Document("_id", "$_id._id")
+                                                                .append("tagName", "$_id.tagName")
+                                                                .append("status", "$_id.status")
+                                                                .append("count", "$count"))));
+
+                result.forEach((doc) -> tagList.put(converter.read(BTag.class, doc), doc.getInteger("count")));
+
+                return tagList;
+        }
+
+        @Override
+        public List<String> findMostLikedBlog() {
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$unwind",
+                                new Document("path", "$like")
+                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$group",
+                                                new Document("_id", "$_id")
+                                                                .append("like",
+                                                                                new Document("$sum", 1L))),
+                                new Document("$sort",
+                                                new Document("like", -1L)),
+                                                new Document("$limit", 50L),
+                                                new Document("$unset", "like")));
+                result.forEach((doc) ->{ 
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                 // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } 
+                });
+
+                return blogs;
+        }
 
 }

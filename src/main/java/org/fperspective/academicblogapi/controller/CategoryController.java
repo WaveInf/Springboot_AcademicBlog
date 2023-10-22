@@ -51,7 +51,7 @@ public class CategoryController {
         return categoryService.get();
     }
 
-    @GetMapping("/show/{id}")
+    @GetMapping("/show/{categoryId}")
     @CrossOrigin
     public Category get(@PathVariable String categoryId) {
         Category category = categoryService.get(categoryId);
@@ -60,7 +60,7 @@ public class CategoryController {
         return category;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{categoryId}")
     @CrossOrigin
     public void delete(@PathVariable String categoryId) {
         categoryService.remove(categoryId);

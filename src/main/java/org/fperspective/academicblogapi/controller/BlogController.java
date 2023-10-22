@@ -8,6 +8,7 @@ import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,7 +59,7 @@ public class BlogController {
         return blogService.get();
     }
 
-    @GetMapping("/show/{id}")
+    @GetMapping("/show/{blogId}")
     @CrossOrigin
     public Blog get(@PathVariable String blogId) {
         Blog blog = blogService.get(blogId);
@@ -71,7 +77,54 @@ public class BlogController {
         return blogs;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @GetMapping("/sort/category/{categoryName}")
+    @CrossOrigin
+    public List<Blog> sortByCategory(@PathVariable String categoryName) {
+        List<Blog> blogs = blogService.sortByCategory(categoryName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/like")
+    @CrossOrigin
+    public List<Blog> sortByMostLiked() {
+        List<Blog> blogs = blogService.sortByMostLiked();
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    // @GetMapping("/sort/like")
+    // @CrossOrigin
+    // public List<String> sortByMostLiked() {
+    //     List<String> blogs = blogService.sortByMostLiked();
+    //     if (blogs == null)
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    //     return blogs;
+    // }
+
+    @GetMapping("/test")
+    @CrossOrigin
+    public String test() throws JsonMappingException, JsonProcessingException {
+         String jsonString = "{\"_id\": {\"$oid\": \"6528d1a718523a8ee09cad0f\"}}";
+
+        // Create an ObjectMapper instance
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // Parse the JSON string
+        JsonNode jsonNode = objectMapper.readTree(jsonString);
+
+        // Access the value associated with "$oid"
+        String oidValue = jsonNode.get("_id").get("$oid").asText();
+
+        // Print the extracted value
+        System.out.println(oidValue);
+        return oidValue;
+    }
+
+    @DeleteMapping("/delete/{blogId}")
+    @PreAuthorize("hasRole('ADMIN','TEACHER')")
     @CrossOrigin
     public void delete(@PathVariable String blogId) {
         blogService.remove(blogId);
@@ -82,6 +135,12 @@ public class BlogController {
     public Blog save(@RequestBody Blog blog){
         blog.setStatus(false);
         return blogService.save(blog);
+    }
+
+    @PostMapping("/update")
+    @CrossOrigin
+    public Blog update(@RequestBody Blog blog){
+        return blogService.update(blog);
     }
     
 }

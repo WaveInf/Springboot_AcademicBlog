@@ -2,9 +2,8 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
-import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class TagController {
         return tagService.get();
     }
 
-    @GetMapping("/show/{id}")
+    @GetMapping("/show/{tagId}")
     @CrossOrigin
     public BTag get(@PathVariable String tagId) {
         BTag tag = tagService.get(tagId);
@@ -63,25 +62,18 @@ public class TagController {
         return tag;
     }
 
-    @GetMapping("/show/count")
+    @GetMapping("/sort/most")
     @CrossOrigin
-    public List<BTag> search() {
-        List<BTag> tags = tagService.findMostUsedTag();
+    //Show most popular tags and its used count as Hashmap
+    public Map<BTag, Integer> search() {
+        Map<BTag, Integer> tags = tagService.findMostUsedTag();
         if (tags == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return tags;
     }
 
-    @GetMapping("/show/count/num")
-    @CrossOrigin
-    public List<Integer> searchCount() {
-        List<Integer> count = tagService.findMostUsedTagCount();
-        if (count == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return count;
-    }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{tagId}")
     @CrossOrigin
     public void delete(@PathVariable String tagId) {
         tagService.remove(tagId);

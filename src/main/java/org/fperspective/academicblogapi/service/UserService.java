@@ -30,13 +30,26 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
-    public void remove(String userId) {
-        userRepository.deleteById(userId);
+    public User remove(String userId) {
+        User existingUser = userRepository.findById(userId).get();
+        existingUser.setStatus(false);
+        return userRepository.save(existingUser);
     }
 
-    public List<User> search(String text) {
-        return searchRepository.searchUserByText(text);
+    // public List<User> search(String text) {
+    //     return searchRepository.searchUserByText(text);
+    // }
+
+    public User update(User user){
+        User existingUser = userRepository.findById(user.getUserId()).get();
+        existingUser.setAvatarId(user.getAvatarId());
+        existingUser.setCategory(user.getCategory());
+        existingUser.setUserName(user.getUserName());
+        return userRepository.save(existingUser);
     }
 
+    // public List<User> searchByCampus(String campus) {
+    //     return searchRepository.searchUserByCampus(campus);
+    // }
     
 }

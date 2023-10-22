@@ -21,13 +21,19 @@ public class SubjectService {
         return subjectRepository.findById(subjectId).orElse(null);
     }
 
-    public void remove(String subjectId) {
-        subjectRepository.deleteById(subjectId);
+    public Subject remove(String subjectId) {
+        Subject existingSubject = subjectRepository.findById(subjectId).get();
+        existingSubject.setStatus(false);
+        return subjectRepository.save(existingSubject);
     }
 
     public Subject save(Subject subject) {
         return subjectRepository.save(subject);
     }
 
-    
+    public Subject update(Subject subject) {
+        Subject existingSubject = subjectRepository.findById(subject.getSubjectId()).get();
+        existingSubject.setSubjectName(subject.getSubjectName());
+        return subjectRepository.save(existingSubject);
+    }
 }

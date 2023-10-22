@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.fperspective.academicblogapi.model.User;
-import org.fperspective.academicblogapi.service.UserService;
+import org.fperspective.academicblogapi.model.Credential;
+import org.fperspective.academicblogapi.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,17 +27,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@Tag(name = "User", description = "User Management API")
+@Tag(name = "Credential", description = "Credential Management API")
 @RequestMapping("/api/v1/user")
 @CrossOrigin
 @ApiResponses(value = {
-    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = User.class), mediaType = "application/json") }),
+    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Credential.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private CredentialService credentialService;
 
     @Hidden
     @RequestMapping("/")
@@ -48,15 +48,15 @@ public class UserController {
 
      @GetMapping("/show")
      @CrossOrigin
-    public Collection<User> get(){
-        return userService.get();
+    public Collection<Credential> get(){
+        return credentialService.get();
     }
 
-    @GetMapping("/show/{id}")
+    @GetMapping("/show/{userId}")
     @CrossOrigin
     
-    public User get(@PathVariable String userId) {
-        User user = userService.get(userId);
+    public Credential get(@PathVariable String userId) {
+        Credential user = credentialService.get(userId);
         if (user == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return user;
@@ -64,22 +64,31 @@ public class UserController {
 
     @GetMapping("/search/{text}")
     @CrossOrigin
-    public List<User> search(@PathVariable String text) {
-        List<User> users = userService.search(text);
+    public List<Credential> search(@PathVariable String text) {
+        List<Credential> users = credentialService.search(text);
         if (users == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return users;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @GetMapping("/search/{campus}")
+    @CrossOrigin
+    public List<Credential> searchByCampus(@PathVariable String campus) {
+        List<Credential> users = credentialService.searchByCampus(campus);
+        if (users == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return users;
+    }
+
+    @DeleteMapping("/delete/{userId}")
     @CrossOrigin
     public void delete(@PathVariable String userId) {
-        userService.remove(userId);
+        credentialService.remove(userId);
     }
 
     @PostMapping("/show")
     @CrossOrigin
-    public User save(@RequestBody User user){
-        return userService.save(user);
+    public Credential save(@RequestBody Credential credential){
+        return credentialService.saveUser(credential);
     }
 }

@@ -21,7 +21,6 @@ public class Blog {
 
     private String blogContent;
 
-    @NotEmpty
     private String userId;
 
     private String[] like;

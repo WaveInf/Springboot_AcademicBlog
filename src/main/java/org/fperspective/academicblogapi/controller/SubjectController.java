@@ -51,7 +51,7 @@ public class SubjectController {
         return subjectService.get();
     }
 
-    @GetMapping("/show/{id}")
+    @GetMapping("/show/{subjectId}")
     @CrossOrigin
     public Subject get(@PathVariable String subjectId) {
         Subject subject = subjectService.get(subjectId);
@@ -60,7 +60,7 @@ public class SubjectController {
         return subject;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{subjectId}")
     @CrossOrigin
     public void delete(@PathVariable String subjectId) {
         subjectService.remove(subjectId);
