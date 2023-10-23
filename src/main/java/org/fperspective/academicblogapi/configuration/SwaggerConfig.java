@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         contact = @Contact(
             name = "Wave",
             email = "annpse172989@fpt.edu.vn",
-            url = "https://github.com/WaveInf"
+            url = "http://localhost:8080/logout"
         ),
         description = "OpenAPI Swagger",
         title = "Wave's OpenAPI",

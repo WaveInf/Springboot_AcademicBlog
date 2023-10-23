@@ -39,7 +39,7 @@ public class BlogService {
 
     public Blog approve(String blogId) {
         Blog existingBlog = blogRepository.findById(blogId).get();
-        existingBlog.setStatus(false);
+        existingBlog.setStatus(true);
         return blogRepository.save(existingBlog);
     }
 

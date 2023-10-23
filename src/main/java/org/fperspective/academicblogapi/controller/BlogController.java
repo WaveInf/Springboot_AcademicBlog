@@ -124,10 +124,17 @@ public class BlogController {
     }
 
     @DeleteMapping("/delete/{blogId}")
-    @PreAuthorize("hasRole('ADMIN','TEACHER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @CrossOrigin
     public void delete(@PathVariable String blogId) {
         blogService.remove(blogId);
+    }
+
+    @DeleteMapping("/approve/{blogId}")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
+    @CrossOrigin
+    public void approve(@PathVariable String blogId) {
+        blogService.approve(blogId);
     }
 
     @PostMapping("/show")

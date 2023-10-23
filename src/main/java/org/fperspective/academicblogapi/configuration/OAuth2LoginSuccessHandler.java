@@ -71,23 +71,31 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                                 SecurityContextHolder.getContext().setAuthentication(securityAuth);
                              }, () -> {
                                 Credential credential = new Credential();
-                                if("fpt.edu.vn".equals(organization)){
-                                    credential.setRole(Role.USER);
+                                if("fpt.edu.vn".equals(organization) && !"annpse172989@fpt.edu.vn".equals(email)){
+                                    credential.setRole(Role.ROLE_USER);
+                                }
+                                else if("fe.edu.vn".equals(organization)){
+                                    credential.setRole(Role.ROLE_TEACHER);
                                 }
                                 else{
-                                    credential.setRole(Role.TEACHER);
+                                    credential.setRole(Role.ROLE_ADMIN);
                                 }
                                 credential.setEmail(email);
                                 credential.setBio(null);
                                 credential.setUsername(userName);
                                 credential.setFullName(fullName);
-                                credential.setPassword(null);
                                 credential.setLoginProvider(LoginProvider.GOOGLE);
                                 credential.setAvatarUrl(avatar_url);
                                 credential.setCampus(campus);
                                 credential.setTerm(term);
                                 
-                                credential.setCategory(category);
+                                if("fpt.edu.vn".equals(organization)){
+                                    credential.setCategory(category);
+                                }
+                                else{
+                                    credential.setCategory(null);
+                                }
+
                                 try {
                                     credential.setCreatedDate(currentDate);
                                 } catch (ParseException e) {

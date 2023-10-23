@@ -1,5 +1,5 @@
 package org.fperspective.academicblogapi.model;
 
 public enum Role {
-    USER, ADMIN, TEACHER
+    ROLE_USER, ROLE_ADMIN, ROLE_TEACHER
 }

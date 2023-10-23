@@ -2,27 +2,18 @@ package org.fperspective.academicblogapi.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-
 import com.mongodb.lang.NonNull;
 
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Document("Credential")
@@ -31,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 // @Data
 public class Credential {
-// implements UserDetails, OidcUser {
+//implements UserDetails , OidcUser {
     @Id
     @Indexed(unique = true)
     private String userID;
@@ -39,8 +30,6 @@ public class Credential {
     private String username;
 
     private String bio;
-
-    private String password;
 
     @NonNull
     @Email
@@ -60,8 +49,6 @@ public class Credential {
 
     private boolean status;
 
-
-    @Field(name = "role")
     @NonNull
     private Role role;
 
@@ -98,10 +85,9 @@ public class Credential {
         this.loginProvider = loginProvider;
     }
 
-    // @Override
-    // public String getName() {
-    //    return Objects.nonNull(fullName) ? fullName : username;
-    // }
+    public String getName() {
+       return Objects.nonNull(fullName) ? fullName : username;
+    }
 
     // @Override
     // public Map<String, Object> getClaims() {
@@ -163,14 +149,6 @@ public class Credential {
 
     public void setBio(String bio) {
         this.bio = bio;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getEmail() {
