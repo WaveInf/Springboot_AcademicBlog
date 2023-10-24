@@ -9,7 +9,6 @@ import java.util.HashMap;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
-import org.fperspective.academicblogapi.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.stereotype.Component;

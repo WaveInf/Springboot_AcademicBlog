@@ -6,7 +6,6 @@ import java.util.Map;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
-import org.fperspective.academicblogapi.model.User;
 import org.springframework.stereotype.Repository;
 
 @Repository

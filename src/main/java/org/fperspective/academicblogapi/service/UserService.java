@@ -1,10 +1,8 @@
 package org.fperspective.academicblogapi.service;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.fperspective.academicblogapi.model.User;
-import org.fperspective.academicblogapi.repository.SearchRepository;
 import org.fperspective.academicblogapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +12,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private SearchRepository searchRepository;
 
     public User save(User user){
         return userRepository.save(user);
@@ -36,9 +31,7 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-    // public List<User> search(String text) {
-    //     return searchRepository.searchUserByText(text);
-    // }
+    
 
     public User update(User user){
         User existingUser = userRepository.findById(user.getUserId()).get();
@@ -48,8 +41,4 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-    // public List<User> searchByCampus(String campus) {
-    //     return searchRepository.searchUserByCampus(campus);
-    // }
-    
 }
