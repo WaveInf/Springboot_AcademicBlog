@@ -1,11 +1,17 @@
 package org.fperspective.academicblogapi.configuration;
 
 import java.util.List;
+
+import org.fperspective.academicblogapi.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,23 +25,30 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Configuration
 @Log4j2
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
+@EnableMongoRepositories(basePackages = "org.fperspective.academicblogapi.repository")
+@ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
+// @PropertySource("classpath:application.properties")
 public class SecurityConfig {
 
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    @Autowired
+    @Lazy
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    @Value("${frontend_url}")
-    private String frontendUrl;
+    @Autowired
+    private AuthService authService;
+
+    // @Value("${FRONT_END_URL}")
+    // private String frontendUrl;
 
     @Bean
-    @Order(1) 
+    // @PostConstruct
+    // @Order(1) 
     //Add authentication (Google, Github, username/password) , CredentialService userCredentialService
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         return http
@@ -46,12 +59,11 @@ public class SecurityConfig {
                 author.anyRequest().authenticated();})
                 .oauth2Login(oc -> {
                     oc.successHandler(oAuth2LoginSuccessHandler);
-                    // .userInfoEndpoint(ui -> {
-                    // ui
-                    // .userService(userCredentialService.oauth2LoginHandler())
-                    // .oidcUserService(userCredentialService.oidcLoginHandler());
-                    // });
+                    oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
                 })
+                // .oauth2ResourceServer(oauth2 -> {
+                //     oauth2.bearerTokenResolver(bearerTokenResolver());
+                // })
                 // .formLogin(Customizer.withDefaults())
                 .build();
     }
@@ -65,7 +77,7 @@ public class SecurityConfig {
     //Allow CORS for all HTTPMethod 
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontendUrl));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedMethod(HttpMethod.GET);

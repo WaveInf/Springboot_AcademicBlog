@@ -6,9 +6,13 @@ import java.util.Map;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@EnableMongoRepositories
+@ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
 public interface SearchRepository {
 
     //Blog method

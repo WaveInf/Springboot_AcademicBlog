@@ -3,11 +3,12 @@ package org.fperspective.academicblogapi;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = org.fperspective.academicblogapi.AcademicBlogApiApplication.class)
 class AcademicBlogApiApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
+		
 	}
 
 }

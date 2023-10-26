@@ -14,6 +14,9 @@ import org.fperspective.academicblogapi.model.Role;
 import org.fperspective.academicblogapi.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,19 +28,20 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
+// @PropertySource("classpath:application.properties")
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     
-    @Value("${frontend_url}")
-    private String frontendUrl;
+    // @Value("${FRONT_END_URL}")
+    // private String frontendUrl;
 
-
-    private final CredentialService credentialService;
+    @Autowired
+    @Lazy
+    private CredentialService credentialService;
 
     @Override
+    // @PostConstruct
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException{
         
         OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
@@ -89,7 +93,6 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                                 credential.setAvatarUrl(avatar_url);
                                 credential.setCampus(campus);
                                 credential.setTerm(term);
-                                
                                 if("fpt.edu.vn".equals(organization)){
                                     credential.setCategory(category);
                                 }
@@ -113,8 +116,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         }
         this.setAlwaysUseDefaultTargetUrl(true);
         //Redirect to front end page
-        // this.setDefaultTargetUrl(frontendUrl);
-        this.setDefaultTargetUrl("http://localhost:8080/swagger-ui/index.html");
+        this.setDefaultTargetUrl("http://localhost:5173");
+        // this.setDefaultTargetUrl("http://localhost:8080/swagger-ui/index.html");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,9 +35,10 @@ import jakarta.servlet.http.HttpServletResponse;
     @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Credential.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
-public class UserController {
+public class CredentialController {
 
     @Autowired
+    // @Lazy
     private CredentialService credentialService;
 
     @Hidden
@@ -46,8 +48,8 @@ public class UserController {
         response.sendRedirect("/swagger-ui.html");
     }
 
-     @GetMapping("/show")
-     @CrossOrigin
+    @GetMapping("/show")
+    @CrossOrigin
     public Collection<Credential> get(){
         return credentialService.get();
     }

@@ -10,6 +10,7 @@ import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.stereotype.Component;
 import org.bson.Document;
@@ -27,9 +28,11 @@ import com.mongodb.client.MongoClient;
 public class SearchRepositoryImpl implements SearchRepository {
 
         @Autowired
+        // @Lazy
         MongoClient client;
 
         @Autowired
+        // @Lazy
         MongoConverter converter;
 
         @Override
@@ -96,7 +99,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                 final List<Credential> users = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
-                MongoCollection<Document> collection = database.getCollection("User");
+                MongoCollection<Document> collection = database.getCollection("Credential");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
                                 new Document("index", "credential")
                                                 .append("text",
@@ -124,7 +127,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                 final List<Credential> users = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
-                MongoCollection<Document> collection = database.getCollection("User");
+                MongoCollection<Document> collection = database.getCollection("Credential");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
                                 new Document("index", "credential")
                                                 .append("text",
@@ -182,16 +185,16 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                 new Document("$sum", 1L))),
                                 new Document("$sort",
                                                 new Document("like", -1L)),
-                                                new Document("$limit", 50L),
-                                                new Document("$unset", "like")));
-                result.forEach((doc) ->{ 
+                                new Document("$limit", 50L),
+                                new Document("$unset", "like")));
+                result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
 
                         // Parse the JSON string
                         JsonNode jsonNode;
                         try {
                                 jsonNode = objectMapper.readTree(converter.read(String.class, doc));
-                                 // Access the value associated with "$oid"
+                                // Access the value associated with "$oid"
                                 String oidValue = jsonNode.get("_id").get("$oid").asText();
                                 blogs.add(oidValue);
                         } catch (JsonMappingException e) {
@@ -200,10 +203,12 @@ public class SearchRepositoryImpl implements SearchRepository {
                         } catch (JsonProcessingException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
-                        } 
+                        }
                 });
 
                 return blogs;
         }
+
+        
 
 }

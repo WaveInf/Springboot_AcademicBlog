@@ -8,15 +8,18 @@ import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.repository.CredentialRepository;
 import org.fperspective.academicblogapi.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CredentialServiceImpl implements CredentialService {
 
     @Autowired
+    // @Lazy
     private CredentialRepository credentialRepository;
 
     @Autowired
+    // @Lazy
     private SearchRepository searchRepository;
 
     @Override

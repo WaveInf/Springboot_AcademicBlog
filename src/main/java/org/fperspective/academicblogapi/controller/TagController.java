@@ -7,6 +7,7 @@ import java.util.Map;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +39,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class TagController {
     
     @Autowired
+    // @Lazy
     private TagService tagService;
 
     @Hidden

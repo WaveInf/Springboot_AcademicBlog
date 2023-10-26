@@ -1,0 +1,444 @@
+ServerApplicationContext : Root WebApplicationContext: initialization completed
+in 3106 ms
+2023-10-26T16:55:49.663+07:00  WARN 16768 --- [           main] ConfigServletWeb
+ServerApplicationContext : Exception encountered during context initialization -
+ cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDepend
+encyException: Error creating bean with name 'OAuth2LoginSuccessHandler': Unsati
+sfied dependency expressed through field 'credentialService': Error creating bea
+n with name 'credentialServiceImpl': Unsatisfied dependency expressed through fi
+eld 'credentialRepository': Error creating bean with name 'credentialRepository'
+ defined in org.fperspective.academicblogapi.repository.CredentialRepository def
+ined in @EnableMongoRepositories declared on AcademicBlogApiApplication: Cannot
+resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOper
+ations'
+2023-10-26T16:55:49.672+07:00  INFO 16768 --- [           main] o.apache.catalin
+a.core.StandardService   : Stopping service [Tomcat]
+2023-10-26T16:55:49.709+07:00  INFO 16768 --- [           main] .s.b.a.l.Conditi
+onEvaluationReportLogger :
+
+Error starting ApplicationContext. To display the condition evaluation report re
+-run your application with 'debug' enabled.
+2023-10-26T16:55:49.777+07:00 ERROR 16768 --- [           main] o.s.boot.SpringA
+pplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating
+ bean with name 'OAuth2LoginSuccessHandler': Unsatisfied dependency expressed th
+rough field 'credentialService': Error creating bean with name 'credentialServic
+eImpl': Unsatisfied dependency expressed through field 'credentialRepository': E
+rror creating bean with name 'credentialRepository' defined in org.fperspective.
+academicblogapi.repository.CredentialRepository defined in @EnableMongoRepositor
+ies declared on AcademicBlogApiApplication: Cannot resolve reference to bean 'mo
+ngoTemplate' while setting bean property 'mongoOperations'
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPost
+Processor.java:767) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.j
+ava:747) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.annotation.InjectionMetadata.inject
+(InjectionMetadata.java:145) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:492
+) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.populateBean(AbstractAutowireCapableBeanFactory.java:1416) ~[spring-bean
+s-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.doCreateBean(AbstractAutowireCapableBeanFactory.java:597) ~[spring-beans
+-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6
+.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$
+doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistr
+y.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar!
+/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBe
+an(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean
+(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+preInstantiateSingletons(DefaultListableBeanFactory.java:973) ~[spring-beans-6.0
+.12.jar!/:6.0.12]
+        at org.springframework.context.support.AbstractApplicationContext.finish
+BeanFactoryInitialization(AbstractApplicationContext.java:942) ~[spring-context-
+6.0.12.jar!/:6.0.12]
+        at org.springframework.context.support.AbstractApplicationContext.refres
+h(AbstractApplicationContext.java:608) ~[spring-context-6.0.12.jar!/:6.0.12]
+        at org.springframework.boot.web.servlet.context.ServletWebServerApplicat
+ionContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.
+1.4.jar!/:3.1.4]
+        at org.springframework.boot.SpringApplication.refresh(SpringApplication.
+java:737) ~[spring-boot-3.1.4.jar!/:3.1.4]
+        at org.springframework.boot.SpringApplication.refreshContext(SpringAppli
+cation.java:439) ~[spring-boot-3.1.4.jar!/:3.1.4]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java
+:315) ~[spring-boot-3.1.4.jar!/:3.1.4]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java
+:1309) ~[spring-boot-3.1.4.jar!/:3.1.4]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java
+:1298) ~[spring-boot-3.1.4.jar!/:3.1.4]
+        at org.fperspective.academicblogapi.AcademicBlogApiApplication.main(Acad
+emicBlogApiApplication.java:21) ~[classes!/:1.0.0-SNAPSHOT]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Dire
+ctMethodHandleAccessor.java:104) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+        at org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner
+.java:49) ~[academic-blog-api-1.0.0-SNAPSHOT.jar:1.0.0-SNAPSHOT]
+        at org.springframework.boot.loader.Launcher.launch(Launcher.java:95) ~[a
+cademic-blog-api-1.0.0-SNAPSHOT.jar:1.0.0-SNAPSHOT]
+        at org.springframework.boot.loader.Launcher.launch(Launcher.java:58) ~[a
+cademic-blog-api-1.0.0-SNAPSHOT.jar:1.0.0-SNAPSHOT]
+        at org.springframework.boot.loader.JarLauncher.main(JarLauncher.java:65)
+ ~[academic-blog-api-1.0.0-SNAPSHOT.jar:1.0.0-SNAPSHOT]
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Err
+or creating bean with name 'credentialServiceImpl': Unsatisfied dependency expre
+ssed through field 'credentialRepository': Error creating bean with name 'creden
+tialRepository' defined in org.fperspective.academicblogapi.repository.Credentia
+lRepository defined in @EnableMongoRepositories declared on AcademicBlogApiAppli
+cation: Cannot resolve reference to bean 'mongoTemplate' while setting bean prop
+erty 'mongoOperations'
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPost
+Processor.java:767) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.j
+ava:747) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.annotation.InjectionMetadata.inject
+(InjectionMetadata.java:145) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:492
+) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.populateBean(AbstractAutowireCapableBeanFactory.java:1416) ~[spring-bean
+s-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.doCreateBean(AbstractAutowireCapableBeanFactory.java:597) ~[spring-beans
+-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6
+.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$
+doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistr
+y.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar!
+/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBe
+an(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean
+(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.config.DependencyDescriptor.resolve
+Candidate(DependencyDescriptor.java:254) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+doResolveDependency(DefaultListableBeanFactory.java:1417) ~[spring-beans-6.0.12.
+jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+resolveDependency(DefaultListableBeanFactory.java:1337) ~[spring-beans-6.0.12.ja
+r!/:6.0.12]
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPost
+Processor.java:764) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        ... 26 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creati
+ng bean with name 'credentialRepository' defined in org.fperspective.academicblo
+gapi.repository.CredentialRepository defined in @EnableMongoRepositories declare
+d on AcademicBlogApiApplication: Cannot resolve reference to bean 'mongoTemplate
+' while setting bean property 'mongoOperations'
+        at org.springframework.beans.factory.support.BeanDefinitionValueResolver
+.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.0.12.ja
+r!/:6.0.12]
+        at org.springframework.beans.factory.support.BeanDefinitionValueResolver
+.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.
+0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1682) ~[spri
+ng-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-bean
+s-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.doCreateBean(AbstractAutowireCapableBeanFactory.java:597) ~[spring-beans
+-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6
+.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$
+doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistr
+y.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar!
+/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBe
+an(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean
+(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.config.DependencyDescriptor.resolve
+Candidate(DependencyDescriptor.java:254) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+doResolveDependency(DefaultListableBeanFactory.java:1417) ~[spring-beans-6.0.12.
+jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+resolveDependency(DefaultListableBeanFactory.java:1337) ~[spring-beans-6.0.12.ja
+r!/:6.0.12]
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanP
+ostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPost
+Processor.java:764) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        ... 40 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Err
+or creating bean with name 'mongoTemplate' defined in class path resource [org/s
+pringframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryDependentConfig
+uration.class]: Unsatisfied dependency expressed through method 'mongoTemplate'
+parameter 0: Error creating bean with name 'mongoDatabaseFactory' defined in cla
+ss path resource [org/springframework/boot/autoconfigure/data/mongo/MongoDatabas
+eFactoryConfiguration.class]: Unsatisfied dependency expressed through method 'm
+ongoDatabaseFactory' parameter 0: Error creating bean with name 'mongo' defined
+in class path resource [org/springframework/boot/autoconfigure/mongo/MongoAutoCo
+nfiguration.class]: Failed to instantiate [com.mongodb.client.MongoClient]: Fact
+ory method 'mongo' threw exception with message: Error creating bean with name '
+standardMongoSettingsCustomizer' defined in class path resource [org/springframe
+work/boot/autoconfigure/mongo/MongoAutoConfiguration$MongoClientSettingsConfigur
+ation.class]: Failed to instantiate [org.springframework.boot.autoconfigure.mong
+o.StandardMongoClientSettingsBuilderCustomizer]: Factory method 'standardMongoSe
+ttingsCustomizer' threw exception with message: The connection string is invalid
+. Connection strings must start with either 'mongodb://' or 'mongodb+srv://
+        at org.springframework.beans.factory.support.ConstructorResolver.createA
+rgumentArray(ConstructorResolver.java:801) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iateUsingFactoryMethod(ConstructorResolver.java:545) ~[spring-beans-6.0.12.jar!/
+:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:13
+32) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1162) ~[sprin
+g-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.doCreateBean(AbstractAutowireCapableBeanFactory.java:560) ~[spring-beans
+-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6
+.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$
+doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistr
+y.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar!
+/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBe
+an(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean
+(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.BeanDefinitionValueResolver
+.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.0.12.ja
+r!/:6.0.12]
+        ... 53 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Err
+or creating bean with name 'mongoDatabaseFactory' defined in class path resource
+ [org/springframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryConfigur
+ation.class]: Unsatisfied dependency expressed through method 'mongoDatabaseFact
+ory' parameter 0: Error creating bean with name 'mongo' defined in class path re
+source [org/springframework/boot/autoconfigure/mongo/MongoAutoConfiguration.clas
+s]: Failed to instantiate [com.mongodb.client.MongoClient]: Factory method 'mong
+o' threw exception with message: Error creating bean with name 'standardMongoSet
+tingsCustomizer' defined in class path resource [org/springframework/boot/autoco
+nfigure/mongo/MongoAutoConfiguration$MongoClientSettingsConfiguration.class]: Fa
+iled to instantiate [org.springframework.boot.autoconfigure.mongo.StandardMongoC
+lientSettingsBuilderCustomizer]: Factory method 'standardMongoSettingsCustomizer
+' threw exception with message: The connection string is invalid. Connection str
+ings must start with either 'mongodb://' or 'mongodb+srv://
+        at org.springframework.beans.factory.support.ConstructorResolver.createA
+rgumentArray(ConstructorResolver.java:801) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iateUsingFactoryMethod(ConstructorResolver.java:545) ~[spring-beans-6.0.12.jar!/
+:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:13
+32) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1162) ~[sprin
+g-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.doCreateBean(AbstractAutowireCapableBeanFactory.java:560) ~[spring-beans
+-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6
+.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$
+doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistr
+y.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar!
+/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBe
+an(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean
+(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.config.DependencyDescriptor.resolve
+Candidate(DependencyDescriptor.java:254) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+doResolveDependency(DefaultListableBeanFactory.java:1417) ~[spring-beans-6.0.12.
+jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+resolveDependency(DefaultListableBeanFactory.java:1337) ~[spring-beans-6.0.12.ja
+r!/:6.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.resolve
+AutowiredArgument(ConstructorResolver.java:910) ~[spring-beans-6.0.12.jar!/:6.0.
+12]
+        at org.springframework.beans.factory.support.ConstructorResolver.createA
+rgumentArray(ConstructorResolver.java:788) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        ... 63 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creati
+ng bean with name 'mongo' defined in class path resource [org/springframework/bo
+ot/autoconfigure/mongo/MongoAutoConfiguration.class]: Failed to instantiate [com
+.mongodb.client.MongoClient]: Factory method 'mongo' threw exception with messag
+e: Error creating bean with name 'standardMongoSettingsCustomizer' defined in cl
+ass path resource [org/springframework/boot/autoconfigure/mongo/MongoAutoConfigu
+ration$MongoClientSettingsConfiguration.class]: Failed to instantiate [org.sprin
+gframework.boot.autoconfigure.mongo.StandardMongoClientSettingsBuilderCustomizer
+]: Factory method 'standardMongoSettingsCustomizer' threw exception with message
+: The connection string is invalid. Connection strings must start with either 'm
+ongodb://' or 'mongodb+srv://
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iate(ConstructorResolver.java:654) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iateUsingFactoryMethod(ConstructorResolver.java:642) ~[spring-beans-6.0.12.jar!/
+:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:13
+32) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1162) ~[sprin
+g-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.doCreateBean(AbstractAutowireCapableBeanFactory.java:560) ~[spring-beans
+-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6
+.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$
+doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistr
+y.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar!
+/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBe
+an(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean
+(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.config.DependencyDescriptor.resolve
+Candidate(DependencyDescriptor.java:254) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+doResolveDependency(DefaultListableBeanFactory.java:1417) ~[spring-beans-6.0.12.
+jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+resolveDependency(DefaultListableBeanFactory.java:1337) ~[spring-beans-6.0.12.ja
+r!/:6.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.resolve
+AutowiredArgument(ConstructorResolver.java:910) ~[spring-beans-6.0.12.jar!/:6.0.
+12]
+        at org.springframework.beans.factory.support.ConstructorResolver.createA
+rgumentArray(ConstructorResolver.java:788) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        ... 77 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to insta
+ntiate [com.mongodb.client.MongoClient]: Factory method 'mongo' threw exception
+with message: Error creating bean with name 'standardMongoSettingsCustomizer' de
+fined in class path resource [org/springframework/boot/autoconfigure/mongo/Mongo
+AutoConfiguration$MongoClientSettingsConfiguration.class]: Failed to instantiate
+ [org.springframework.boot.autoconfigure.mongo.StandardMongoClientSettingsBuilde
+rCustomizer]: Factory method 'standardMongoSettingsCustomizer' threw exception w
+ith message: The connection string is invalid. Connection strings must start wit
+h either 'mongodb://' or 'mongodb+srv://
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy
+.instantiate(SimpleInstantiationStrategy.java:171) ~[spring-beans-6.0.12.jar!/:6
+.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iate(ConstructorResolver.java:650) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        ... 91 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creati
+ng bean with name 'standardMongoSettingsCustomizer' defined in class path resour
+ce [org/springframework/boot/autoconfigure/mongo/MongoAutoConfiguration$MongoCli
+entSettingsConfiguration.class]: Failed to instantiate [org.springframework.boot
+.autoconfigure.mongo.StandardMongoClientSettingsBuilderCustomizer]: Factory meth
+od 'standardMongoSettingsCustomizer' threw exception with message: The connectio
+n string is invalid. Connection strings must start with either 'mongodb://' or '
+mongodb+srv://
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iate(ConstructorResolver.java:654) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iateUsingFactoryMethod(ConstructorResolver.java:642) ~[spring-beans-6.0.12.jar!/
+:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:13
+32) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1162) ~[sprin
+g-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.doCreateBean(AbstractAutowireCapableBeanFactory.java:560) ~[spring-beans
+-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBean
+Factory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6
+.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$
+doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistr
+y.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar!
+/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBe
+an(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean
+(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.config.DependencyDescriptor.resolve
+Candidate(DependencyDescriptor.java:254) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+addCandidateEntry(DefaultListableBeanFactory.java:1640) ~[spring-beans-6.0.12.ja
+r!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+findAutowireCandidates(DefaultListableBeanFactory.java:1597) ~[spring-beans-6.0.
+12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+resolveMultipleBeans(DefaultListableBeanFactory.java:1443) ~[spring-beans-6.0.12
+.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.
+doResolveDependency(DefaultListableBeanFactory.java:1375) ~[spring-beans-6.0.12.
+jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory$
+DependencyObjectProvider.resolveStream(DefaultListableBeanFactory.java:2142) ~[s
+pring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory$
+DependencyObjectProvider.orderedStream(DefaultListableBeanFactory.java:2136) ~[s
+pring-beans-6.0.12.jar!/:6.0.12]
+        at org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.m
+ongo(MongoAutoConfiguration.java:59) ~[spring-boot-autoconfigure-3.1.4.jar!/:3.1
+.4]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Dire
+ctMethodHandleAccessor.java:104) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy
+.instantiate(SimpleInstantiationStrategy.java:139) ~[spring-beans-6.0.12.jar!/:6
+.0.12]
+        ... 92 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to insta
+ntiate [org.springframework.boot.autoconfigure.mongo.StandardMongoClientSettings
+BuilderCustomizer]: Factory method 'standardMongoSettingsCustomizer' threw excep
+tion with message: The connection string is invalid. Connection strings must sta
+rt with either 'mongodb://' or 'mongodb+srv://
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy
+.instantiate(SimpleInstantiationStrategy.java:171) ~[spring-beans-6.0.12.jar!/:6
+.0.12]
+        at org.springframework.beans.factory.support.ConstructorResolver.instant
+iate(ConstructorResolver.java:650) ~[spring-beans-6.0.12.jar!/:6.0.12]
+        ... 112 common frames omitted
+Caused by: java.lang.IllegalArgumentException: The connection string is invalid.
+ Connection strings must start with either 'mongodb://' or 'mongodb+srv://
+        at com.mongodb.ConnectionString.<init>(ConnectionString.java:303) ~[mong
+odb-driver-core-4.9.1.jar!/:na]
+        at org.springframework.boot.autoconfigure.mongo.PropertiesMongoConnectio
+nDetails.getConnectionString(PropertiesMongoConnectionDetails.java:47) ~[spring-
+boot-autoconfigure-3.1.4.jar!/:3.1.4]
+        at org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration$M
+ongoClientSettingsConfiguration.standardMongoSettingsCustomizer(MongoAutoConfigu
+ration.java:74) ~[spring-boot-autoconfigure-3.1.4.jar!/:3.1.4]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Dire
+ctMethodHandleAccessor.java:104) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy
+.instantiate(SimpleInstantiationStrategy.java:139) ~[spring-beans-6.0.12.jar!/:6
+.0.12]

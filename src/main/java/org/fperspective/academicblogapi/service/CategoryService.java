@@ -5,12 +5,14 @@ import java.util.Collection;
 import org.fperspective.academicblogapi.model.Category;
 import org.fperspective.academicblogapi.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryService {
     
     @Autowired
+    // @Lazy
     private CategoryRepository categoryRepository;
 
     public Category save(Category category){

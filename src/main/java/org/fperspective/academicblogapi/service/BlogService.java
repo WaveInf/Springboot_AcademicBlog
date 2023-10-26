@@ -8,15 +8,18 @@ import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.repository.BlogRepository;
 import org.fperspective.academicblogapi.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BlogService {
 
     @Autowired
+    // @Lazy
     private BlogRepository blogRepository;
 
     @Autowired
+    // @Lazy
     private SearchRepository searchRepository;
 
     public Blog save(Blog blog){

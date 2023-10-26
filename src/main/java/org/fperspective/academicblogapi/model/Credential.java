@@ -2,32 +2,41 @@ package org.fperspective.academicblogapi.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
 import com.mongodb.lang.NonNull;
 
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Document("Credential")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 // @Data
-public class Credential {
-//implements UserDetails , OidcUser {
+// public class Credential implements UserDetails , OidcUser {
+    public class Credential implements OAuth2User {
     @Id
-    @Indexed(unique = true)
     private String userID;
 
     private String username;
+
+    @JsonIgnore
+    private String password;
 
     private String bio;
 
@@ -52,30 +61,30 @@ public class Credential {
     @NonNull
     private Role role;
 
-    // private Map<String, Object> attributes;
+    private Map<String, Object> attributes;
 
-    // private Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities;
 
     @NonNull
     @Field(name = "source")
     private LoginProvider loginProvider;
     
 
-    // public Map<String, Object> getAttributes() {
-    //     return attributes;
-    // }
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
-    // public void setAttributes(Map<String, Object> attributes) {
-    //     this.attributes = attributes;
-    // }
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
 
-    // public Collection<? extends GrantedAuthority> getAuthorities(){
-    //     return authorities;
-    // }
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        return authorities;
+    }
 
-    // public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-    //     this.authorities = authorities;
-    // }
+    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
 
     public LoginProvider getLoginProvider(){
         return loginProvider;
@@ -85,6 +94,7 @@ public class Credential {
         this.loginProvider = loginProvider;
     }
 
+    @Override
     public String getName() {
        return Objects.nonNull(fullName) ? fullName : username;
     }
@@ -235,6 +245,5 @@ public class Credential {
     public void setRole(Role role) {
         this.role = role;
     }
-
     
 }
