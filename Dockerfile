@@ -16,13 +16,13 @@ FROM maven:3.8.4-openjdk-17 AS build
 # WORKDIR /app
 # COPY . /app/
 COPY . .
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 #
 # Package stage
 #
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar /app/app.jar
+COPY --from=build /target/academic-blog-api-1.0.0-SNAPSHOT.jar academic-blog-api.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
