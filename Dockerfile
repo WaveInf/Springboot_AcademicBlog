@@ -25,4 +25,4 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /target/academic-blog-api-1.0.0-SNAPSHOT.jar academic-blog-api.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar","academic-blog-api-1.0.0-SNAPSHOT.jar"]
