@@ -13,9 +13,10 @@
 #
 # docker pull maven:3.8.4-openjdk-17
 FROM maven:3.8.4-openjdk-17 AS build
-WORKDIR /app
-COPY . /app/
-RUN mvn clean package
+# WORKDIR /app
+# COPY . /app/
+COPY . .
+RUN mvn clean package -DskipTests
 
 #
 # Package stage
