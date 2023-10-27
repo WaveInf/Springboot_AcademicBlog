@@ -42,8 +42,8 @@ public class SecurityConfig {
     // @Autowired
     // private AuthService authService;
 
-    // @Value("${FRONT_END_URL}")
-    // private String frontendUrl;
+    @Value("${FRONT_END_URL}")
+    private String frontendUrl;
 
     @Bean
     // @Order(1) 
@@ -75,7 +75,7 @@ public class SecurityConfig {
     //Allow CORS for all HTTPMethod 
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(frontendUrl));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedMethod(HttpMethod.GET);

@@ -15,8 +15,11 @@
 FROM maven:3.8.4-openjdk-17 AS build
 # WORKDIR /app
 # COPY . /app/
+RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cat /etc/secrets/.env
+# DOCKER_BUILDKIT = 1 
+# docker build --secret id=FILENAME,src=LOCAL_FILENAME ...
 COPY . .
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 #
 # Package stage
@@ -25,4 +28,4 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /target/academic-blog-api-1.0.0-SNAPSHOT.jar academic-blog-api.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","academic-blog-api-1.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","academic-blog-api.jar"]

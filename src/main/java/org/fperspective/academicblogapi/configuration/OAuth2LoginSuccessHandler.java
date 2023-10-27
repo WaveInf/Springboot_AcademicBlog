@@ -33,8 +33,8 @@ import jakarta.servlet.http.HttpServletResponse;
 // @PropertySource("classpath:application.properties")
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     
-    // @Value("${FRONT_END_URL}")
-    // private String frontendUrl;
+    @Value("${FRONT_END_URL}")
+    private String frontendUrl;
 
     @Autowired
     @Lazy
@@ -116,8 +116,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         }
         this.setAlwaysUseDefaultTargetUrl(true);
         //Redirect to front end page
-        this.setDefaultTargetUrl("http://localhost:5173");
-        // this.setDefaultTargetUrl("http://localhost:8080/swagger-ui/index.html");
+        // this.setDefaultTargetUrl("http://localhost:5173");
+        this.setDefaultTargetUrl(frontendUrl);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }
