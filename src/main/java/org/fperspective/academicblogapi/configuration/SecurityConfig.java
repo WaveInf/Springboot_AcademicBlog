@@ -24,6 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -31,6 +32,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableWebMvc
 // mvn
 @ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
 public class SecurityConfig {
