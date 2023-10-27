@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.stereotype.Repository;
 
 @Repository
+@EnableMongoRepositories(basePackages = "org.fperspective.academicblogapi.repository")
 public interface CategoryRepository extends MongoRepository<Category, String> {
     
 }

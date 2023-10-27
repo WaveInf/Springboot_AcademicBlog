@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.stereotype.Repository;
 
 @Repository
-@EnableMongoRepositories
 @ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
 public interface SearchRepository {
 

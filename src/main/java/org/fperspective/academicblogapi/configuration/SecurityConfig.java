@@ -31,23 +31,21 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableMongoRepositories(basePackages = "org.fperspective.academicblogapi.repository")
+// mvn
 @ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
-// @PropertySource("classpath:application.properties")
 public class SecurityConfig {
 
     @Autowired
     @Lazy
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    @Autowired
-    private AuthService authService;
+    // @Autowired
+    // private AuthService authService;
 
     // @Value("${FRONT_END_URL}")
     // private String frontendUrl;
 
     @Bean
-    // @PostConstruct
     // @Order(1) 
     //Add authentication (Google, Github, username/password) , CredentialService userCredentialService
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
@@ -59,7 +57,7 @@ public class SecurityConfig {
                 author.anyRequest().authenticated();})
                 .oauth2Login(oc -> {
                     oc.successHandler(oAuth2LoginSuccessHandler);
-                    oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
+                    // oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
                 })
                 // .oauth2ResourceServer(oauth2 -> {
                 //     oauth2.bearerTokenResolver(bearerTokenResolver());

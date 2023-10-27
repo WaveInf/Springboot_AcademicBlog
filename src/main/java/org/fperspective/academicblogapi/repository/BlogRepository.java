@@ -6,9 +6,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.stereotype.Repository;
 
 @Repository
-@EnableMongoRepositories
 public interface BlogRepository extends MongoRepository<Blog, String> {
     
 }
-
 

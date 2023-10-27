@@ -12,6 +12,7 @@ import org.fperspective.academicblogapi.model.Credential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Component;
 import org.bson.Document;
 import com.mongodb.client.MongoCollection;

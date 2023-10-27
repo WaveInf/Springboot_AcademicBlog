@@ -97,34 +97,6 @@ public class BlogController {
         return blogs;
     }
 
-    // @GetMapping("/sort/like")
-    // @CrossOrigin
-    // public List<String> sortByMostLiked() {
-    //     List<String> blogs = blogService.sortByMostLiked();
-    //     if (blogs == null)
-    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    //     return blogs;
-    // }
-
-    @GetMapping("/test")
-    @CrossOrigin
-    public String test() throws JsonMappingException, JsonProcessingException {
-         String jsonString = "{\"_id\": {\"$oid\": \"6528d1a718523a8ee09cad0f\"}}";
-
-        // Create an ObjectMapper instance
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // Parse the JSON string
-        JsonNode jsonNode = objectMapper.readTree(jsonString);
-
-        // Access the value associated with "$oid"
-        String oidValue = jsonNode.get("_id").get("$oid").asText();
-
-        // Print the extracted value
-        System.out.println(oidValue);
-        return oidValue;
-    }
-
     @DeleteMapping("/delete/{blogId}")
     @PreAuthorize("hasRole('ADMIN')")
     @CrossOrigin

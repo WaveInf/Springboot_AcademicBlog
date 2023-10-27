@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.stereotype.Repository;
 
 @Repository
-@EnableMongoRepositories
 public interface CredentialRepository extends MongoRepository<Credential, String>{
     
     Optional<Credential> findByEmail(String email);
