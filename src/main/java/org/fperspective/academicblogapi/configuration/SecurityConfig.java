@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,6 +26,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -33,7 +35,6 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 @EnableMethodSecurity
 @EnableWebMvc
-// mvn
 @ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
 public class SecurityConfig {
 
@@ -53,7 +54,14 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource());
+                })
+                .sessionManagement((session) -> {
+                    session.sessionConcurrency((concur) -> {
+                        concur.maximumSessions(1).expiredUrl("/login?expired");
+                    });
+                })
                 .authorizeHttpRequests(author -> {
                 author.requestMatchers("/api/v1/").permitAll();                
                 author.anyRequest().authenticated();})
