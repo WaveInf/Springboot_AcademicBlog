@@ -1,5 +1,8 @@
 package org.fperspective.academicblogapi.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,5 +26,14 @@ public class HomeController {
     @CrossOrigin
     String login() {
         return "app-user/login";
+    }
+
+    @GetMapping("/token")
+    public String getAccessToken(@AuthenticationPrincipal OidcUser principal) {
+        OidcIdToken idToken = principal.getIdToken();
+        String idTokenValue = idToken.getTokenValue();
+
+        return idTokenValue ;
+
     }
 }

@@ -1,6 +1,8 @@
 package org.fperspective.academicblogapi.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.fperspective.academicblogapi.model.BTag;
@@ -39,8 +41,22 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
-    public Map<BTag, Integer> findMostUsedTag() {
-        return searchRepository.findMostUsedTag();
+    public List<BTag> findMostUsedTag() {
+        List<String> tags = searchRepository.findMostUsedTag();
+        List<BTag> tagList = new ArrayList<>();
+        tags.forEach((tag) -> tagList.add(tagRepository.findById(tag).orElse(null)));
+        return tagList;
+    }
+
+    public List<String> test() {
+        List<String> tags = searchRepository.findMostUsedTag();
+        // List<BTag> tagList = new ArrayList<>();
+        // tags.forEach((tag) -> tagList.add(tagRepository.findById(tag).get()));
+        return tags;
+    }
+
+    public Integer findMostUsedTagCount(String tagName) {
+        return searchRepository.findMostUsedTagCount(tagName);
     }
     
     public BTag update(BTag tag){

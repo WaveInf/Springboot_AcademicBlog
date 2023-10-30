@@ -29,6 +29,8 @@ public interface SearchRepository {
     List<Credential> searchUserByCampus(String campus);
 
     //Tag method
-    Map<BTag, Integer> findMostUsedTag();
+    List<String> findMostUsedTag();
+
+    Integer findMostUsedTagCount(String tagName);
 
 }

@@ -2,6 +2,7 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.fperspective.academicblogapi.model.BTag;
@@ -67,8 +68,28 @@ public class TagController {
     @GetMapping("/sort/most")
     @CrossOrigin
     //Show most popular tags and its used count as Hashmap
-    public Map<BTag, Integer> search() {
-        Map<BTag, Integer> tags = tagService.findMostUsedTag();
+    public List<BTag> search() {
+        List<BTag> tags = tagService.findMostUsedTag();
+        if (tags == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return tags;
+    }
+
+    @GetMapping("/test")
+    @CrossOrigin
+    //Show most popular tags and its used count as Hashmap
+    public List<String> test() {
+        List<String> tags = tagService.test();
+        if (tags == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return tags;
+    }
+
+    @GetMapping("/sort/most/{tagName}")
+    @CrossOrigin
+    //Show most popular tags and its used count as Hashmap
+    public Integer searchCount(@PathVariable String tagName) {
+        Integer tags = tagService.findMostUsedTagCount(tagName);
         if (tags == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return tags;

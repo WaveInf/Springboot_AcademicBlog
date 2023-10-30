@@ -10,9 +10,7 @@ import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Component;
 import org.bson.Document;
 import com.mongodb.client.MongoCollection;
@@ -27,7 +25,7 @@ import com.mongodb.client.MongoClient;
 
 @Component
 public class SearchRepositoryImpl implements SearchRepository {
-
+        
         @Autowired
         // @Lazy
         MongoClient client;
@@ -151,24 +149,54 @@ public class SearchRepositoryImpl implements SearchRepository {
 
         @Override
         // Query to find most used tags and its used count
-        public Map<BTag, Integer> findMostUsedTag() {
+        public List<String> findMostUsedTag() {
 
-                final Map<BTag, Integer> tagList = new HashMap<>();
+                final List<String> tags = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$unwind",
                                 new Document("path", "$btag").append("preserveNullAndEmptyArrays", false)),
-                                new Document("$sortByCount", "$btag"),
-                                new Document("$project",
-                                                new Document("_id", "$_id._id")
-                                                                .append("tagName", "$_id.tagName")
-                                                                .append("status", "$_id.status")
-                                                                .append("count", "$count"))));
+                                new Document("$sortByCount", "$btag._id"),
+                                new Document("$limit", 4L),
+                                new Document("$unset", "count")));
 
-                result.forEach((doc) -> tagList.put(converter.read(BTag.class, doc), doc.getInteger("count")));
+                result.forEach((doc) -> {ObjectMapper objectMapper = new ObjectMapper();
 
-                return tagList;
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                tags.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return tags;
+        }
+
+        @Override
+        public Integer findMostUsedTagCount(String tagName) {
+
+                final List<BTag> count = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                                new Document("query", tagName)
+                                                                                .append("path", "btag.tagName")))));
+                result.forEach((doc) -> count.add(converter.read(BTag.class, doc)));
+
+                return count.size();
         }
 
         @Override
@@ -209,7 +237,5 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 return blogs;
         }
-
-        
 
 }
