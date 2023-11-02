@@ -7,7 +7,6 @@ import java.util.List;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,11 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -88,10 +82,19 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/like")
+    @GetMapping("/sort/like/{limit}")
     @CrossOrigin
-    public List<Blog> sortByMostLiked() {
-        List<Blog> blogs = blogService.sortByMostLiked();
+    public List<Blog> sortByMostLiked(@PathVariable String limit) {
+        List<Blog> blogs = blogService.sortByMostLiked(limit);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/latest")
+    @CrossOrigin
+    public List<Blog> sortLatest() {
+        List<Blog> blogs = blogService.sortLatest();
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

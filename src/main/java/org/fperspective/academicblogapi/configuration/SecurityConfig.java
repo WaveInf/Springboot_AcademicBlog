@@ -9,16 +9,12 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,8 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import lombok.extern.log4j.Log4j2;
 
 @Configuration
@@ -39,11 +33,11 @@ import lombok.extern.log4j.Log4j2;
 public class SecurityConfig {
 
     @Autowired
-    @Lazy
+    // @Lazy
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    // @Autowired
-    // private AuthService authService;
+    @Autowired
+    private AuthService authService;
 
     @Value("${FRONT_END_URL}")
     private String frontendUrl;
@@ -66,8 +60,8 @@ public class SecurityConfig {
                 author.requestMatchers("/api/v1/").permitAll();                
                 author.anyRequest().authenticated();})
                 .oauth2Login(oc -> {
-                    oc.successHandler(oAuth2LoginSuccessHandler);
                     // oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
+                    oc.successHandler(oAuth2LoginSuccessHandler);
                 })
                 // .oauth2ResourceServer(oauth2 -> {
                 //     oauth2.bearerTokenResolver(bearerTokenResolver());

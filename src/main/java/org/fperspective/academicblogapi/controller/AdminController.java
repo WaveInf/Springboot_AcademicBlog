@@ -1,14 +1,11 @@
 package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
-import java.security.Principal;
+import java.util.Collection;
 import java.util.Map;
 
-import org.fperspective.academicblogapi.model.Credential;
-import org.fperspective.academicblogapi.repository.SearchRepository;
-import org.fperspective.academicblogapi.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,10 +40,16 @@ public class AdminController {
         return authentication.getName();
     }
 
-    @RequestMapping("/test")
+    @RequestMapping("/attribute")
     @CrossOrigin
-    public Map<String, Object> test(@AuthenticationPrincipal OAuth2User oAuth2User){
+    public Map<String, Object> getAttribute(@AuthenticationPrincipal OAuth2User oAuth2User){
         return oAuth2User.getAttributes();
+    }
+
+    @RequestMapping("/authorize")
+    @CrossOrigin
+    public Collection<? extends GrantedAuthority>  getAuthorization(@AuthenticationPrincipal OAuth2User oAuth2User){
+        return oAuth2User.getAuthorities();
     }
 
 }

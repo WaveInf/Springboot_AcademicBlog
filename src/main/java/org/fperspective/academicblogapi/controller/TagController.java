@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/api/v1/tag")
 @CrossOrigin
 @ApiResponses(value = {
-    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Tag.class), mediaType = "application/json") }),
+    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = BTag.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class TagController {
@@ -65,27 +65,28 @@ public class TagController {
         return tag;
     }
 
-    @GetMapping("/sort/most")
+    @GetMapping("/sort/{limit}")
     @CrossOrigin
     //Show most popular tags and its used count as Hashmap
-    public List<BTag> search() {
-        List<BTag> tags = tagService.findMostUsedTag();
+    public List<BTag> search(@PathVariable String limit) {
+        List<BTag> tags = tagService.findMostUsedTag(limit);
         if (tags == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return tags;
     }
 
-    @GetMapping("/test")
+
+    @GetMapping("/test/{limitString}")
     @CrossOrigin
     //Show most popular tags and its used count as Hashmap
-    public List<String> test() {
-        List<String> tags = tagService.test();
+    public List<String> test(@PathVariable String limitString) {
+        List<String> tags = tagService.test(limitString);
         if (tags == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return tags;
     }
 
-    @GetMapping("/sort/most/{tagName}")
+    @GetMapping("/count/{tagName}")
     @CrossOrigin
     //Show most popular tags and its used count as Hashmap
     public Integer searchCount(@PathVariable String tagName) {

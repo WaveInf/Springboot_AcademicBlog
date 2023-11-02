@@ -1,17 +1,11 @@
 package org.fperspective.academicblogapi.repository;
 
 import java.util.List;
-import java.util.Map;
-
-import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
 public interface SearchRepository {
 
     //Blog method
@@ -19,7 +13,9 @@ public interface SearchRepository {
 
     List<Blog> searchBlogByCategory(String category);
 
-    List<String> findMostLikedBlog();
+    List<String> findMostLikedBlog(String limit);
+
+    List<Blog> sortLatestBlog();
 
     // String findMostLikedBlog();
 
@@ -29,7 +25,7 @@ public interface SearchRepository {
     List<Credential> searchUserByCampus(String campus);
 
     //Tag method
-    List<String> findMostUsedTag();
+    List<String> findMostUsedTag(String limit);
 
     Integer findMostUsedTagCount(String tagName);
 

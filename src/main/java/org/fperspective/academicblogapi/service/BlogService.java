@@ -19,7 +19,7 @@ public class BlogService {
     private BlogRepository blogRepository;
 
     @Autowired
-    // @Lazy
+    @Lazy
     private SearchRepository searchRepository;
 
     public Blog save(Blog blog){
@@ -64,14 +64,15 @@ public class BlogService {
         return searchRepository.searchBlogByCategory(categoryName);
     }
 
-    public List<Blog> sortByMostLiked() {
-        List<String> blogs = searchRepository.findMostLikedBlog();
+    public List<Blog> sortByMostLiked(String limit) {
+        List<String> blogs = searchRepository.findMostLikedBlog(limit);
         List<Blog> blogList = new ArrayList<>();
         blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
         return blogList;
     }
 
-    // public List<String> sortByMostLiked(){
-    //     return searchRepository.findMostLikedBlog();
-    // }
+    public List<Blog> sortLatest() {
+        return searchRepository.sortLatestBlog();
+    }
+
 }

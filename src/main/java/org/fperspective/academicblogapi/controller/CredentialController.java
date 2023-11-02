@@ -73,7 +73,7 @@ public class CredentialController {
         return users;
     }
 
-    @GetMapping("/search/{campus}")
+    @GetMapping("/campus/{campus}")
     @CrossOrigin
     public List<Credential> searchByCampus(@PathVariable String campus) {
         List<Credential> users = credentialService.searchByCampus(campus);

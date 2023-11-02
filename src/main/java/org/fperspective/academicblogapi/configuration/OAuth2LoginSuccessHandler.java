@@ -2,6 +2,8 @@ package org.fperspective.academicblogapi.configuration;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -47,6 +50,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
 
         if("google".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())){
+            
             DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();
             Map<String, Object> attributes = principal.getAttributes();
             String email = attributes.getOrDefault("email", "").toString();
@@ -67,7 +71,13 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             String[] parts = input.replace("(", "").replace(")", "").split(" ");
             String term = parts[0];
             String campus = parts[1];
+            // Integer num = (Integer) attributes.getOrDefault("exp", "");
             Date currentDate = new Date();
+            // SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	        // Date date = new Date();
+            // System.out.println(formatter.format(date));
+            Collection<? extends GrantedAuthority> authority = authentication.getAuthorities();
+
             if("fpt.edu.vn".equals(organization) || "fe.edu.vn".equals(organization)){
             credentialService.findByEmail(email)
                              .ifPresentOrElse(user -> {
@@ -106,6 +116,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
+                                // credential.setAttributes(attributes);
+                                // credential.setAuthorities(authority);
                                 credential.setStatus(true);
                                 credentialService.save(credential);
                                 DefaultOAuth2User newUser = new DefaultOAuth2User(List.of(new SimpleGrantedAuthority(credential.getRole().name())), attributes, "name");

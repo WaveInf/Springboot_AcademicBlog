@@ -65,6 +65,24 @@ import net.minidev.json.annotate.JsonIgnore;
 
     private Collection<? extends GrantedAuthority> authorities;
 
+    // public Credential(String userID, String username, String bio, @Email String email, String avatarUrl, String campus,
+    //         String term, String category, String fullName, Date createdDate, boolean status, Role role,
+    //         LoginProvider loginProvider) {
+    //     this.userID = userID;
+    //     this.username = username;
+    //     this.bio = bio;
+    //     this.email = email;
+    //     this.avatarUrl = avatarUrl;
+    //     this.campus = campus;
+    //     this.term = term;
+    //     this.category = category;
+    //     this.fullName = fullName;
+    //     this.createdDate = createdDate;
+    //     this.status = status;
+    //     this.role = role;
+    //     this.loginProvider = loginProvider;
+    // }
+
     @NonNull
     @Field(name = "source")
     private LoginProvider loginProvider;

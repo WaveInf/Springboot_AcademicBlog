@@ -1,5 +1,7 @@
 package org.fperspective.academicblogapi.model;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.NotEmpty;
@@ -37,6 +39,6 @@ public class Blog {
     @NotNull
     private boolean status;
 
-    private String uploadDate;
+    private Date uploadDate;
     
 }

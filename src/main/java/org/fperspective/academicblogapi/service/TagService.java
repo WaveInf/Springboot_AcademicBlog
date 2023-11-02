@@ -41,15 +41,15 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
-    public List<BTag> findMostUsedTag() {
-        List<String> tags = searchRepository.findMostUsedTag();
+    public List<BTag> findMostUsedTag(String limit) {
+        List<String> tags = searchRepository.findMostUsedTag(limit);
         List<BTag> tagList = new ArrayList<>();
         tags.forEach((tag) -> tagList.add(tagRepository.findById(tag).orElse(null)));
         return tagList;
     }
 
-    public List<String> test() {
-        List<String> tags = searchRepository.findMostUsedTag();
+    public List<String> test(String limit) {
+        List<String> tags = searchRepository.findMostUsedTag(limit);
         // List<BTag> tagList = new ArrayList<>();
         // tags.forEach((tag) -> tagList.add(tagRepository.findById(tag).get()));
         return tags;
