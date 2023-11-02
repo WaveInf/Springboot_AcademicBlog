@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.fperspective.academicblogapi.model.Subject;
 import org.fperspective.academicblogapi.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service

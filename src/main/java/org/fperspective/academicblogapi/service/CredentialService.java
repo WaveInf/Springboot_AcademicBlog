@@ -12,6 +12,8 @@ public interface CredentialService {
 
     Optional<Credential> findByEmail(String email);
 
+    List<Credential> findRecommendedUser(String[] tagName);
+
     void save(Credential credential);
 
     Credential get(String userId);

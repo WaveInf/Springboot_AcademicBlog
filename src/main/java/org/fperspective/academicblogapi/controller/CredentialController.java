@@ -82,6 +82,15 @@ public class CredentialController {
         return users;
     }
 
+    @GetMapping("/test/{tagName}")
+    @CrossOrigin
+    public List<Credential> test(@PathVariable String[] tagName) {
+        List<Credential> users = credentialService.findRecommendedUser(tagName);
+        if (users == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return users;
+    }
+
     @DeleteMapping("/delete/{userId}")
     @CrossOrigin
     public void delete(@PathVariable String userId) {

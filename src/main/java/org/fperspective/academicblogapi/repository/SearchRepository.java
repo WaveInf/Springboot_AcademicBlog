@@ -17,12 +17,16 @@ public interface SearchRepository {
 
     List<Blog> sortLatestBlog();
 
+    List<String> sortBlogByDate();
+
     // String findMostLikedBlog();
 
     //User method
     List<Credential> searchUserByText(String text);
 
     List<Credential> searchUserByCampus(String campus);
+
+    List<String> findRecommendedUser(String[] tagName);
 
     //Tag method
     List<String> findMostUsedTag(String limit);

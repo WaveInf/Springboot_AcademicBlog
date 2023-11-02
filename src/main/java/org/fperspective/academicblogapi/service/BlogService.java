@@ -75,4 +75,8 @@ public class BlogService {
         return searchRepository.sortLatestBlog();
     }
 
+    public List<String> test() {
+        return searchRepository.sortBlogByDate();
+    }
+
 }

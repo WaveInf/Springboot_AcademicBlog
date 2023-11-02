@@ -1,5 +1,6 @@
 package org.fperspective.academicblogapi.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,6 @@ import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.repository.CredentialRepository;
 import org.fperspective.academicblogapi.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -72,5 +72,13 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     public List<Credential> searchByCampus(String campus) {
         return searchRepository.searchUserByCampus(campus);
+    }
+
+    @Override
+    public List<Credential> findRecommendedUser(String[] tagName) {
+        List<String> users = searchRepository.findRecommendedUser(tagName);
+        List<Credential> userList = new ArrayList<>();
+        users.forEach((user) -> userList.add(credentialRepository.findById(user).get()));
+        return userList;
     }
 }

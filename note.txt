@@ -1,0 +1,39 @@
+//count number of blog per month
+
+MongoDatabase database = mongoClient.getDatabase("Main");
+MongoCollection<Document> collection = database.getCollection("Blog");
+AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$group", 
+    new Document("_id", 
+    new Document("blogId", "$_id")
+                .append("month", 
+    new Document("$month", "$uploadDate"))
+                .append("year", 
+    new Document("$year", "$uploadDate"))
+            .append("numberOfBlog", 
+    new Document("$sum", 1L)))));
+
+//find blog by month/year
+
+MongoDatabase database = mongoClient.getDatabase("Main");
+MongoCollection<Document> collection = database.getCollection("Blog");
+AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$group", 
+    new Document("_id", 
+    new Document("blogId", "$_id")
+                .append("month", 
+    new Document("$month", "$uploadDate"))
+                .append("year", 
+    new Document("$year", "$uploadDate")))), 
+    new Document("$group", 
+    new Document("_id", 
+    new Document("month", "$_id.month")
+                .append("year", "$_id.year"))
+            .append("blogId", 
+    new Document("$push", "$_id.blogId"))), 
+    new Document("$match", 
+    new Document("_id.year", 2022L)
+            .append("_id.month", 10L)), 
+    new Document("$project", 
+    new Document("_id", "$blogId")),
+    new Document("$unwind",
+    new Document("path", "$_id")
+            .append("preserveNullAndEmptyArrays", false))));

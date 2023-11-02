@@ -100,8 +100,17 @@ public class BlogController {
         return blogs;
     }
 
+    @GetMapping("/test")
+    @CrossOrigin
+    public List<String> test() {
+        List<String> blogs = blogService.test();
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
     @DeleteMapping("/delete/{blogId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @CrossOrigin
     public void delete(@PathVariable String blogId) {
         blogService.remove(blogId);

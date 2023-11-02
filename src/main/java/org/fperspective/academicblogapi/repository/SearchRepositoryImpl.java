@@ -32,11 +32,9 @@ public class SearchRepositoryImpl implements SearchRepository {
         @Lazy
         MongoConverter converter;
 
-
         /*
          * BLOG METHOD
          */
-
 
         @Override
         // Blog search by blogName / tagName with autocorrect by 2 letters at 3rd index
@@ -116,6 +114,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("like", -1L)),
                                 new Document("$limit", limitLong),
                                 new Document("$unset", "like")));
+
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -141,23 +140,72 @@ public class SearchRepositoryImpl implements SearchRepository {
         @Override
         public List<Blog> sortLatestBlog() {
 
-                 final List<Blog> blogs = new ArrayList<>();
+                final List<Blog> blogs = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$sort",
                                 new Document("uploadDate", -1L))));
 
-                result.forEach((blog) -> blogs.add(converter.read(Blog.class, blog)));  
-                
+                result.forEach((blog) -> blogs.add(converter.read(Blog.class, blog)));
+
                 return blogs;
         }
 
+        @Override
+        public List<String> sortBlogByDate() {
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$group",
+                                new Document("_id",
+                                                new Document("blogId", "$_id")
+                                                                .append("month",
+                                                                                new Document("$month", "$uploadDate"))
+                                                                .append("year",
+                                                                                new Document("$year", "$uploadDate")))),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("month", "$_id.month")
+                                                                                .append("year", "$_id.year"))
+                                                                .append("blogId",
+                                                                                new Document("$push", "$_id.blogId"))),
+                                new Document("$match",
+                                                new Document("_id.year", 2022L)
+                                                                .append("_id.month", 10L)),
+                                new Document("$project",
+                                                new Document("_id", "$blogId")),
+                                new Document("$unwind",
+                                                new Document("path", "$_id")
+                                                                .append("preserveNullAndEmptyArrays", false))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
 
         /*
          * USER METHOD
          */
-
 
         @Override
         // User search by userName with autocorrect by 2 letters at 3rd index
@@ -209,11 +257,45 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return users;
         }
 
+        public List<String> findRecommendedUser(String[] tagName) {
+                final List<String> users = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                new Document("query", Arrays.asList(tagName))
+                                                                                .append("path", "btag.tagName"))),
+                                new Document("$sortByCount", "$userId"),
+                                new Document("$unset", "count"),
+                                new Document("$limit", 3L)));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                users.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });           
+
+                return users;
+        }
 
         /*
          * TAG METHOD
          */
-
 
         @Override
         // Query to find most used tags and its used count
