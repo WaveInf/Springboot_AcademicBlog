@@ -61,8 +61,12 @@ public class BlogService {
         return searchRepository.searchBlogByText(text);
     }
 
-    public List<Blog> sortByCategory(String categoryName) {
+    public List<Blog> searchByCategory(String categoryName) {
         return searchRepository.searchBlogByCategory(categoryName);
+    }
+
+    public List<Blog> searchByUser(String userId) {
+        return searchRepository.searchBlogByUser(userId);
     }
 
     public List<Blog> sortByMostLiked(String limit) {

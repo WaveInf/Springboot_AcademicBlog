@@ -13,6 +13,8 @@ public interface SearchRepository {
 
     List<Blog> searchBlogByCategory(String category);
 
+    List<Blog> searchBlogByUser(String userId);
+
     List<String> findMostLikedBlog(String limit);
 
     List<Blog> sortLatestBlog();

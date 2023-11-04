@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.stereotype.Component;
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -98,6 +100,23 @@ public class SearchRepositoryImpl implements SearchRepository {
                                 new Document("$sort",
                                                 new Document("blogTitle", 1L)),
                                 new Document("$limit", 5L)));
+
+                result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
+
+                return blogs;
+        }
+
+        @Override
+        public List<Blog> searchBlogByUser(String userId) {
+                final List<Blog> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("userId",
+                                                new ObjectId(userId))),
+                                new Document("$sort",
+                                                new Document("uploadDate", -1L))));
 
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
 
@@ -421,7 +440,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                         new Document("status", false)
                                                                         .append("deleted", false)),
                                         new Document("$sort",
-                                                new Document("uploadDate", 1L))));
+                                                        new Document("uploadDate", 1L))));
                 }
 
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
@@ -429,11 +448,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return blogs;
         }
 
-
         /*
          * USER METHOD
          */
-
 
         @Override
         // User search by userName with autocorrect by 2 letters at 3rd index

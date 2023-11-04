@@ -74,6 +74,16 @@ public class BlogController {
         return blogs;
     }
 
+    @GetMapping("/search/user/{userId}")
+    @CrossOrigin
+    public List<Blog> searchByUser(@PathVariable String userId) {
+        List<Blog> blogs = blogService.searchByUser(userId);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+
     @GetMapping("/approve/{operator}")
     @CrossOrigin
     public List<Blog> findUnapprovedBlogs(@PathVariable String operator) {
@@ -85,8 +95,8 @@ public class BlogController {
 
     @GetMapping("/sort/category/{categoryName}")
     @CrossOrigin
-    public List<Blog> sortByCategory(@PathVariable String categoryName) {
-        List<Blog> blogs = blogService.sortByCategory(categoryName);
+    public List<Blog> searchByCategory(@PathVariable String categoryName) {
+        List<Blog> blogs = blogService.searchByCategory(categoryName);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;
