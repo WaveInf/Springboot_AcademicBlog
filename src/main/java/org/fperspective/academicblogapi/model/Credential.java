@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +18,6 @@ import com.mongodb.lang.NonNull;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
 

@@ -37,3 +37,9 @@ AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Docu
     new Document("$unwind",
     new Document("path", "$_id")
             .append("preserveNullAndEmptyArrays", false))));
+
+//put this in every search for blog to ignore deleted or unapproved blog
+
+new Document("$match",
+    new Document("status", true)
+        .append("deleted", false)),

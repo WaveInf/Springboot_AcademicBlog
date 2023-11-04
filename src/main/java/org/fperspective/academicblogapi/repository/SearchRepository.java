@@ -17,7 +17,13 @@ public interface SearchRepository {
 
     List<Blog> sortLatestBlog();
 
-    List<String> sortBlogByDate();
+    List<String> sortBlogByYear(String year);
+
+    List<String> sortBlogByMonth(String year, String month);
+
+    List<String> sortBlogByWeek(String year, String month, String week);
+
+    List<Blog> findUnapprovedBlogs(String operator);
 
     // String findMostLikedBlog();
 
@@ -26,7 +32,7 @@ public interface SearchRepository {
 
     List<Credential> searchUserByCampus(String campus);
 
-    List<String> findRecommendedUser(String[] tagName);
+    List<String> findRecommendedUser(String[] search);
 
     //Tag method
     List<String> findMostUsedTag(String limit);

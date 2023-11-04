@@ -39,6 +39,9 @@ public class Blog {
     @NotNull
     private boolean status;
 
+    @NotNull
+    private boolean deleted;
+
     private Date uploadDate;
     
 }

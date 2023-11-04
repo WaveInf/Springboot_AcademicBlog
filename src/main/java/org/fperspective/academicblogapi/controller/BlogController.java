@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import ch.qos.logback.core.model.processor.PhaseIndicator;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -73,6 +74,15 @@ public class BlogController {
         return blogs;
     }
 
+    @GetMapping("/approve/{operator}")
+    @CrossOrigin
+    public List<Blog> findUnapprovedBlogs(@PathVariable String operator) {
+        List<Blog> blogs = blogService.findUnapprovedBlogs(operator);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
     @GetMapping("/sort/category/{categoryName}")
     @CrossOrigin
     public List<Blog> sortByCategory(@PathVariable String categoryName) {
@@ -100,10 +110,28 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/test")
+    @GetMapping("/sort/year/{year}")
     @CrossOrigin
-    public List<String> test() {
-        List<String> blogs = blogService.test();
+    public List<Blog> sortYear(@PathVariable String year) {
+        List<Blog> blogs = blogService.sortYear(year);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/month/{year}/{month}")
+    @CrossOrigin
+    public List<Blog> sortMonth(@PathVariable("year") String year, @PathVariable("month") String month) {
+        List<Blog> blogs = blogService.sortMonth(year, month);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/week/{year}/{month}/{week}")
+    @CrossOrigin
+    public List<Blog> sortWeek(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week) {
+        List<Blog> blogs = blogService.sortWeek(year, month, week);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

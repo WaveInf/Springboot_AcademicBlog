@@ -37,6 +37,7 @@ public class BlogService {
     public Blog remove(String blogId) {
         Blog existingBlog = blogRepository.findById(blogId).get();
         existingBlog.setStatus(false);
+        existingBlog.setDeleted(true);
         return blogRepository.save(existingBlog);
     }
 
@@ -75,8 +76,30 @@ public class BlogService {
         return searchRepository.sortLatestBlog();
     }
 
-    public List<String> test() {
-        return searchRepository.sortBlogByDate();
+    public List<Blog> sortYear(String year) {
+        List<String> blogs = searchRepository.sortBlogByYear(year);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
     }
 
+    public List<Blog> sortMonth(String year, String month) {
+        List<String> blogs = searchRepository.sortBlogByMonth(year, month);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> sortWeek(String year, String month, String week) {
+       List<String> blogs = searchRepository.sortBlogByWeek(year, month, week);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+
+    public List<Blog> findUnapprovedBlogs(String operator){
+        List<Blog> blogs = searchRepository.findUnapprovedBlogs(operator);
+        return blogs;
+    }
 }

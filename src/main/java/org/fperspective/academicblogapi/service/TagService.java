@@ -3,13 +3,10 @@ package org.fperspective.academicblogapi.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.repository.SearchRepository;
 import org.fperspective.academicblogapi.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service

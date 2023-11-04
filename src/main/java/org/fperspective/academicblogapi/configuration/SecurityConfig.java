@@ -36,9 +36,6 @@ public class SecurityConfig {
     // @Lazy
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    @Autowired
-    private AuthService authService;
-
     @Value("${FRONT_END_URL}")
     private String frontendUrl;
 

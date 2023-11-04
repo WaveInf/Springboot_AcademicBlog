@@ -7,7 +7,6 @@ import java.util.List;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -82,10 +81,10 @@ public class CredentialController {
         return users;
     }
 
-    @GetMapping("/test/{tagName}")
+    @GetMapping("/recommend/{search}")
     @CrossOrigin
-    public List<Credential> test(@PathVariable String[] tagName) {
-        List<Credential> users = credentialService.findRecommendedUser(tagName);
+    public List<Credential> test(@PathVariable String[] search) {
+        List<Credential> users = credentialService.findRecommendedUser(search);
         if (users == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return users;
