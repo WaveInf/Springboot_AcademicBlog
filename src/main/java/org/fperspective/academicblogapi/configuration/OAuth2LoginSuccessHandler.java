@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bson.types.ObjectId;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.model.LoginProvider;
 import org.fperspective.academicblogapi.model.Role;
@@ -54,6 +55,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             String pattern = "([a-zA-Z]{2})(\\d+)";
             Pattern r = Pattern.compile(pattern);
             Matcher m = r.matcher(email);
+            ObjectId userID = new ObjectId();
             String result = null;
             if(m.find()){
                 result = m.group(1).toLowerCase();

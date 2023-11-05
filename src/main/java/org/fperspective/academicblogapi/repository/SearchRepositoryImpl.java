@@ -47,9 +47,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)
-                                                                .append("deleted", false)),
+
                                 new Document("$search",
                                                 new Document("index", "blog")
                                                                 .append("text",
@@ -64,6 +62,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                 2L)
                                                                                                                                 .append("prefixLength",
                                                                                                                                                 3L)))),
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
                                 new Document("$sort",
                                                 new Document("blogTitle", 1L)),
                                 new Document("$limit", 5L)));
@@ -82,9 +83,6 @@ public class SearchRepositoryImpl implements SearchRepository {
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)
-                                                                .append("deleted", false)),
                                 new Document("$search",
                                                 new Document("index", "blog")
                                                                 .append("text",
@@ -97,6 +95,10 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                 2L)
                                                                                                                                 .append("prefixLength",
                                                                                                                                                 3L)))),
+
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
                                 new Document("$sort",
                                                 new Document("blogTitle", 1L)),
                                 new Document("$limit", 5L)));
@@ -112,9 +114,13 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
-                                new Document("userId",
-                                                new ObjectId(userId))),
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$match",
+                                                new Document("userId",
+                                                                new ObjectId(userId))),
                                 new Document("$sort",
                                                 new Document("uploadDate", -1L))));
 
@@ -461,13 +467,14 @@ public class SearchRepositoryImpl implements SearchRepository {
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Credential");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)),
+
                                 new Document("$search",
                                                 new Document("index", "credential")
                                                                 .append("text",
                                                                                 new Document("query", text)
                                                                                                 .append("path", "username"))),
+                                new Document("$match",
+                                                new Document("status", true)),
                                 new Document("$sort",
                                                 new Document("username", -1L)),
                                 new Document("$limit", 5L)));
@@ -486,8 +493,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Credential");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)),
+
                                 new Document("$search",
                                                 new Document("index", "credential")
                                                                 .append("text",
@@ -499,6 +505,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                 2L)
                                                                                                                                 .append("prefixLength",
                                                                                                                                                 3L)))),
+
+                                new Document("$match",
+                                                new Document("status", true)),
                                 new Document("$sort",
                                                 new Document("userName", 1L)),
                                 new Document("$limit", 5L)));
@@ -508,28 +517,47 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return users;
         }
 
-        public List<String> findRecommendedUser(String[] search) {
+        @Override
+        public Credential searchUserByEmail(String email) {
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Credential");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("email", email))));
+
+                return converter.read(Credential.class, result.first());
+        }
+
+        @Override
+        public List<String> findRecommendedUser(String search) {
                 final List<String> users = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)),
-                                new Document("$search",
-                                                new Document("index", "blog")
-                                                                .append("text",
-                                                                                new Document("query",
-                                                                                                Arrays.asList(search))
-                                                                                                .append("path", Arrays
-                                                                                                                .asList(
-                                                                                                                                "subject.subjectName",
-                                                                                                                                "btag.tagName",
-                                                                                                                                "category.categoryName")))),
-                                new Document("$sortByCount", "$userId"),
-                                new Document("$unset", "count"),
-                                new Document("$limit", 3L)));
-
+                AggregateIterable<Document> result;
+                if ("all".equals(search)) {
+                        result = collection.aggregate(Arrays.asList(new Document("$match",
+                                        new Document("status", true)),
+                                        new Document("$sortByCount", "$userId"),
+                                        new Document("$unset", "count"),
+                                        new Document("$limit", 3L)));
+                } else {
+                        result = collection.aggregate(Arrays.asList(
+                                        new Document("$search",
+                                                        new Document("index", "blog")
+                                                                        .append("text",
+                                                                                        new Document("query",
+                                                                                                        Arrays.asList(search))
+                                                                                                        .append("path", Arrays
+                                                                                                                        .asList(
+                                                                                                                                        "subject.subjectName",
+                                                                                                                                        "btag.tagName",
+                                                                                                                                        "category.categoryName")))),
+                                        new Document("$match",
+                                                        new Document("status", true)),
+                                        new Document("$sortByCount", "$userId"),
+                                        new Document("$unset", "count"),
+                                        new Document("$limit", 3L)));
+                }
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -606,16 +634,18 @@ public class SearchRepositoryImpl implements SearchRepository {
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)),
                                 new Document("$search",
                                                 new Document("index", "blog")
                                                                 .append("text",
                                                                                 new Document("query", tagName)
-                                                                                                .append("path", "btag.tagName")))));
+                                                                                                .append("path", "btag.tagName"))),
+                                new Document("$match",
+                                                new Document("status", true))));
                 result.forEach((doc) -> count.add(converter.read(BTag.class, doc)));
 
-                return count.size();
+                Integer tagCount = count.size();
+
+                return tagCount;
         }
 
 }

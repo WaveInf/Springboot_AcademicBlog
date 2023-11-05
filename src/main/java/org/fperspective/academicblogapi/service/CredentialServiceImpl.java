@@ -75,7 +75,12 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     @Override
-    public List<Credential> findRecommendedUser(String[] search) {
+    public Credential searchByEmail(String email){
+        return searchRepository.searchUserByEmail(email);
+    }
+
+    @Override
+    public List<Credential> findRecommendedUser(String search) {
         List<String> users = searchRepository.findRecommendedUser(search);
         List<Credential> userList = new ArrayList<>();
         users.forEach((user) -> userList.add(credentialRepository.findById(user).get()));

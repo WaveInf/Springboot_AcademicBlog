@@ -34,7 +34,9 @@ public interface SearchRepository {
 
     List<Credential> searchUserByCampus(String campus);
 
-    List<String> findRecommendedUser(String[] search);
+    Credential searchUserByEmail(String email);
+
+    List<String> findRecommendedUser(String search);
 
     //Tag method
     List<String> findMostUsedTag(String limit);

@@ -55,7 +55,6 @@ public class CredentialController {
 
     @GetMapping("/show/{userId}")
     @CrossOrigin
-    
     public Credential get(@PathVariable String userId) {
         Credential user = credentialService.get(userId);
         if (user == null)
@@ -83,7 +82,7 @@ public class CredentialController {
 
     @GetMapping("/recommend/{search}")
     @CrossOrigin
-    public List<Credential> test(@PathVariable String[] search) {
+    public List<Credential> test(@PathVariable String search) {
         List<Credential> users = credentialService.findRecommendedUser(search);
         if (users == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
+import org.fperspective.academicblogapi.model.Credential;
+import org.fperspective.academicblogapi.service.CredentialService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +31,9 @@ import jakarta.servlet.http.HttpServletResponse;
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class AdminController {
 
+    @Autowired
+    private CredentialService credentialService;
+
     @RequestMapping("/")
     @CrossOrigin
     public void redirect(HttpServletResponse response) throws IOException{
@@ -44,6 +50,13 @@ public class AdminController {
     @CrossOrigin
     public Map<String, Object> getAttribute(@AuthenticationPrincipal OAuth2User oAuth2User){
         return oAuth2User.getAttributes();
+    }
+
+    @RequestMapping("/currentUser")
+    @CrossOrigin
+    public Credential getCredential(@AuthenticationPrincipal OAuth2User oAuth2User){
+        String email = oAuth2User.getAttribute("email");
+        return credentialService.searchByEmail(email);
     }
 
     @RequestMapping("/authorize")
