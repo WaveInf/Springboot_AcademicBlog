@@ -73,4 +73,10 @@ public class CategoryController {
         category.setStatus(false);
         return categoryService.save(category);
     }
+
+    @PostMapping("/update")
+    @CrossOrigin
+    public Category update(@RequestBody Category category){
+        return categoryService.update(category);
+    }
 }

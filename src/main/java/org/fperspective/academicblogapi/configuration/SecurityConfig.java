@@ -2,7 +2,6 @@ package org.fperspective.academicblogapi.configuration;
 
 import java.util.List;
 
-import org.fperspective.academicblogapi.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;

@@ -72,4 +72,10 @@ public class SubjectController {
     public Subject save(@RequestBody Subject subject){
         return subjectService.save(subject);
     }
+
+    @PostMapping("/update")
+    @CrossOrigin
+    public Subject update(@RequestBody Subject subject){
+        return subjectService.update(subject);
+    }
 }

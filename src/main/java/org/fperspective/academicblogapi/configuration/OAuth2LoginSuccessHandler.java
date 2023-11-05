@@ -31,7 +31,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-// @PropertySource("classpath:application.properties")
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     
     @Value("${FRONT_END_URL}")

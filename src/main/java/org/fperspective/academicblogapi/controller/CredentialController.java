@@ -62,6 +62,12 @@ public class CredentialController {
         return user;
     }
 
+    @PostMapping("/update")
+    @CrossOrigin
+    public Credential update(@RequestBody Credential credential){
+        return credentialService.update(credential);
+    }
+
     @GetMapping("/search/{text}")
     @CrossOrigin
     public List<Credential> search(@PathVariable String text) {

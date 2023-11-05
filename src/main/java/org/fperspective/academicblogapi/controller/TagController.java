@@ -106,4 +106,10 @@ public class TagController {
         return tagService.save(tag);
     }
 
+    @PostMapping("/update")
+    @CrossOrigin
+    public BTag update(@RequestBody BTag tag){
+        return tagService.update(tag);
+    }
+
 }
