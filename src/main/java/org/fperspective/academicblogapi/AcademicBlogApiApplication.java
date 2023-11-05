@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 // })
 @EnableMongoRepositories(basePackages = "org.fperspective.academicblogapi.repository")
 @PropertySource("classpath:application.properties")
-@Profile("FPerspecTive")
+// @Profile("FPerspecTive")
 public class AcademicBlogApiApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
