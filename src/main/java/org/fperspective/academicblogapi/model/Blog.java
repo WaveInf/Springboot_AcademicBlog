@@ -29,7 +29,6 @@ public class Blog {
 
     private String[] commentId;
 
-    @NotEmpty
     private Category category;
 
     private Subject[] subject;

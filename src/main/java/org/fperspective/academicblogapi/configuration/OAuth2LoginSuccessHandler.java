@@ -33,7 +33,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     
-    @Value("${FRONT_END_URL}")
+    @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
 
     @Autowired

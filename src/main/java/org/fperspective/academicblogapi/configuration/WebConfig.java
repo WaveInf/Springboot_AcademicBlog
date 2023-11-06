@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${FRONT_END_URL}")
+    @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
 
 

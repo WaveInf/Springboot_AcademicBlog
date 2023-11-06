@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,6 +165,10 @@ public class BlogController {
     @CrossOrigin
     public Blog save(@RequestBody Blog blog){
         blog.setStatus(false);
+        blog.setUploadDate(null);
+        blog.setDeleted(false);
+        blog.setCommentId(new String[0]);
+        blog.setLike(new String[0]);
         return blogService.save(blog);
     }
 

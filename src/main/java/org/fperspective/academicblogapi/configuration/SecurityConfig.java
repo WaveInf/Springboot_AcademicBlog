@@ -36,7 +36,7 @@ public class SecurityConfig {
     // @Lazy
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    @Value("${FRONT_END_URL}")
+    @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
 
     @Bean
