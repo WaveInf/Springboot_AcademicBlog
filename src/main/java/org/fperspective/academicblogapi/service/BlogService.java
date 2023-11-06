@@ -57,8 +57,8 @@ public class BlogService {
         return blogRepository.save(existingBlog);
     }
 
-    public List<Blog> search(String text) {
-        return searchRepository.searchBlogByText(text);
+    public List<Blog> search(String text[], String[] operator) {
+        return searchRepository.searchBlogByText(text,operator);
     }
 
     public List<Blog> searchByCategory(String categoryName) {

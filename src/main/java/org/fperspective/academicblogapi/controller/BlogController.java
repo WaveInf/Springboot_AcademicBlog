@@ -65,10 +65,10 @@ public class BlogController {
         return blog;
     }
 
-    @GetMapping("/search/{text}")
+    @GetMapping("/search/{text}/{operator}")
     @CrossOrigin
-    public List<Blog> search(@PathVariable String text) {
-        List<Blog> blogs = blogService.search(text);
+    public List<Blog> search(@PathVariable("text") String[] text, @PathVariable("operator") String[] operator) {
+        List<Blog> blogs = blogService.search(text, operator);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface SearchRepository {
 
     //Blog method
-    List<Blog> searchBlogByText(String text);
+    List<Blog> searchBlogByText(String text[], String[] operator);
 
     List<Blog> searchBlogByCategory(String category);
 
