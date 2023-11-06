@@ -138,7 +138,9 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                AggregateIterable<Document> result;
+                if("all".equals(limit)) {
+                        result = collection.aggregate(Arrays.asList(
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
@@ -153,6 +155,24 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("like", -1L)),
                                 new Document("$limit", limitLong),
                                 new Document("$unset", "like")));
+                }
+                else{
+                        result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$unwind",
+                                                new Document("path", "$like")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$group",
+                                                new Document("_id", "$_id")
+                                                                .append("like",
+                                                                                new Document("$sum", 1L))),
+                                new Document("$sort",
+                                                new Document("like", -1L)),
+                                new Document("$unset", "like")));
+                }
+
 
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();

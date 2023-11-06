@@ -46,6 +46,12 @@ public class AdminController {
         return authentication.getName();
     }
 
+    @RequestMapping("/check")
+    @CrossOrigin
+    public Boolean checkLogin(Authentication authentication){
+        return authentication.isAuthenticated();
+    }
+
     @RequestMapping("/attribute")
     @CrossOrigin
     public Map<String, Object> getAttribute(@AuthenticationPrincipal OAuth2User oAuth2User){
