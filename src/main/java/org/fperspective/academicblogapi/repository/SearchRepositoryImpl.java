@@ -229,7 +229,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                 .append("deleted", false)),
                                 new Document("$unwind",
                                                 new Document("path", "$like")
-                                                                .append("preserveNullAndEmptyArrays", false)),
+                                                                .append("preserveNullAndEmptyArrays", true)),
                                 new Document("$group",
                                                 new Document("_id", "$_id")
                                                                 .append("like",
@@ -284,7 +284,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                 .append("deleted", false)),
                                 new Document("$unwind",
                                                 new Document("path", "$like")
-                                                                .append("preserveNullAndEmptyArrays", false)),
+                                                                .append("preserveNullAndEmptyArrays", true)),
                                 new Document("$group",
                                                 new Document("_id", "$_id")
                                                                 .append("like",
@@ -339,7 +339,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                 .append("deleted", false)),
                                 new Document("$unwind",
                                                 new Document("path", "$like")
-                                                                .append("preserveNullAndEmptyArrays", false)),
+                                                                .append("preserveNullAndEmptyArrays", true)),
                                 new Document("$group",
                                                 new Document("_id", "$_id")
                                                                 .append("like",
@@ -394,7 +394,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                 .append("deleted", false)),
                                 new Document("$unwind",
                                                 new Document("path", "$like")
-                                                                .append("preserveNullAndEmptyArrays", false)),
+                                                                .append("preserveNullAndEmptyArrays", true)),
                                 new Document("$group",
                                                 new Document("_id", "$_id")
                                                                 .append("like",
@@ -442,7 +442,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                 userId)),
                                 new Document("$unwind",
                                                 new Document("path", "$like")
-                                                                .append("preserveNullAndEmptyArrays", false)),
+                                                                .append("preserveNullAndEmptyArrays", true)),
                                 new Document("$group",
                                                 new Document("_id", "$_id")
                                                                 .append("like",

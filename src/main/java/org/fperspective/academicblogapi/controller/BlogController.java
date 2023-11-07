@@ -162,7 +162,7 @@ public class BlogController {
 
     @GetMapping("/sort/user/{userId}")
     @CrossOrigin
-    //sort most popular blog by blogTitle
+    //sort most popular blog by user
     public List<Blog> sortByMostLikedByUser(@PathVariable("userId") String userId) {
         List<Blog> blogs = blogService.findMostLikedBlogByUser(userId);
         if (blogs == null)
