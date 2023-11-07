@@ -88,8 +88,17 @@ public class CredentialController {
 
     @GetMapping("/recommend/{search}")
     @CrossOrigin
-    public List<Credential> test(@PathVariable String search) {
+    public List<Credential> findRecommended(@PathVariable String search) {
         List<Credential> users = credentialService.findRecommendedUser(search);
+        if (users == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return users;
+    }
+
+    @GetMapping("/test/{search}")
+    @CrossOrigin
+    public List<String> test(@PathVariable String search) {
+        List<String> users = credentialService.test(search);
         if (users == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return users;

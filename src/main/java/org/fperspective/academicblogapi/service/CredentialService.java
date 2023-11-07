@@ -14,6 +14,8 @@ public interface CredentialService {
 
     List<Credential> findRecommendedUser(String search);
 
+    public List<String> test(String search);
+
     void save(Credential credential);
 
     Credential get(String userId);

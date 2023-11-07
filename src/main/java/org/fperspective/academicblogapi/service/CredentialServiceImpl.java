@@ -86,4 +86,10 @@ public class CredentialServiceImpl implements CredentialService {
         users.forEach((user) -> userList.add(credentialRepository.findById(user).get()));
         return userList;
     }
+
+    @Override
+    public List<String> test(String search) {
+        List<String> users = searchRepository.findRecommendedUser(search);
+        return users;
+    }
 }

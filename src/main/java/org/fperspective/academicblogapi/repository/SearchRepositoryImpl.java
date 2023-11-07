@@ -196,7 +196,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                 .append("deleted", false)),
                                 new Document("$match",
                                                 new Document("userId",
-                                                                new ObjectId(userId))),
+                                                                userId)),
                                 new Document("$sort",
                                                 new Document("uploadDate", timeLong))));
 
@@ -439,7 +439,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                 .append("deleted", false)),
                                 new Document("$match",
                                                 new Document("userId",
-                                                                new ObjectId(userId))),
+                                                                userId)),
                                 new Document("$unwind",
                                                 new Document("path", "$like")
                                                                 .append("preserveNullAndEmptyArrays", false)),
@@ -493,6 +493,55 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
+        public List<String> sortBlogAll() {
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("deleted", false)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("numberOfLike",
+                                                                                                new Document("$cond",
+                                                                                                                new Document("if",
+                                                                                                                                new Document("$isArray",
+                                                                                                                                                "$like"))
+                                                                                                                                .append("then",
+                                                                                                                                                new Document("$size",
+                                                                                                                                                                "$like"))
+                                                                                                                                .append("else", "NA"))))),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
         public List<String> sortBlogByYear(String year) {
 
                 Long yearLong = Long.parseLong(year);
@@ -501,21 +550,14 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)
-                                                                .append("deleted", false)),
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("deleted", false)),
                                 new Document("$group",
                                                 new Document("_id",
                                                                 new Document("blogId", "$_id")
                                                                                 .append("year",
                                                                                                 new Document("$year",
-                                                                                                                "$uploadDate"))
-                                                                                .append("month",
-                                                                                                new Document("$month",
-                                                                                                                "$uploadDate"))
-                                                                                .append("week",
-                                                                                                new Document("$week",
                                                                                                                 "$uploadDate"))
                                                                                 .append("numberOfLike",
                                                                                                 new Document("$cond",
@@ -526,23 +568,12 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                                 new Document("$size",
                                                                                                                                                                 "$like"))
                                                                                                                                 .append("else", "NA"))))),
-                                new Document("$group",
-                                                new Document("_id",
-                                                                new Document("year", "$_id.year")
-                                                                                .append("month", "$_id.month")
-                                                                                .append("week", "$_id.week")
-                                                                                .append("like", "$_id.numberOfLike"))
-                                                                .append("blogId",
-                                                                                new Document("$push", "$_id.blogId"))),
-                                new Document("$sort",
-                                                new Document("_id.numberOfLike", -1L)),
                                 new Document("$match",
                                                 new Document("_id.year", yearLong)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
                                 new Document("$project",
-                                                new Document("_id", "$blogId")),
-                                new Document("$unwind",
-                                                new Document("path", "$_id")
-                                                                .append("preserveNullAndEmptyArrays", false))));
+                                                new Document("_id", "$_id.blogId"))));
 
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
@@ -577,10 +608,9 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)
-                                                                .append("deleted", false)),
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("deleted", false)),
                                 new Document("$group",
                                                 new Document("_id",
                                                                 new Document("blogId", "$_id")
@@ -589,9 +619,6 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                 "$uploadDate"))
                                                                                 .append("month",
                                                                                                 new Document("$month",
-                                                                                                                "$uploadDate"))
-                                                                                .append("week",
-                                                                                                new Document("$week",
                                                                                                                 "$uploadDate"))
                                                                                 .append("numberOfLike",
                                                                                                 new Document("$cond",
@@ -602,24 +629,13 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                                 new Document("$size",
                                                                                                                                                                 "$like"))
                                                                                                                                 .append("else", "NA"))))),
-                                new Document("$group",
-                                                new Document("_id",
-                                                                new Document("year", "$_id.year")
-                                                                                .append("month", "$_id.month")
-                                                                                .append("week", "$_id.week")
-                                                                                .append("like", "$_id.numberOfLike"))
-                                                                .append("blogId",
-                                                                                new Document("$push", "$_id.blogId"))),
-                                new Document("$sort",
-                                                new Document("_id.numberOfLike", -1L)),
                                 new Document("$match",
                                                 new Document("_id.year", yearLong)
                                                                 .append("_id.month", monthLong)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
                                 new Document("$project",
-                                                new Document("_id", "$blogId")),
-                                new Document("$unwind",
-                                                new Document("path", "$_id")
-                                                                .append("preserveNullAndEmptyArrays", false))));
+                                                new Document("_id", "$_id.blogId"))));
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -655,10 +671,9 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)
-                                                                .append("deleted", false)),
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("deleted", false)),
                                 new Document("$group",
                                                 new Document("_id",
                                                                 new Document("blogId", "$_id")
@@ -671,6 +686,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                 .append("week",
                                                                                                 new Document("$week",
                                                                                                                 "$uploadDate"))
+                                                                                .append("day",
+                                                                                                new Document("$dayOfMonth",
+                                                                                                                "$uploadDate"))
                                                                                 .append("numberOfLike",
                                                                                                 new Document("$cond",
                                                                                                                 new Document("if",
@@ -680,25 +698,14 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                                 new Document("$size",
                                                                                                                                                                 "$like"))
                                                                                                                                 .append("else", "NA"))))),
-                                new Document("$group",
-                                                new Document("_id",
-                                                                new Document("year", "$_id.year")
-                                                                                .append("month", "$_id.month")
-                                                                                .append("week", "$_id.week")
-                                                                                .append("like", "$_id.numberOfLike"))
-                                                                .append("blogId",
-                                                                                new Document("$push", "$_id.blogId"))),
-                                new Document("$sort",
-                                                new Document("_id.numberOfLike", -1L)),
                                 new Document("$match",
                                                 new Document("_id.year", yearLong)
-                                                                .append("_id.month", monthLong)
-                                                                .append("_id.week", weekLong)),
+                                                .append("_id.month", monthLong)
+                                                .append("_id.week", weekLong)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
                                 new Document("$project",
-                                                new Document("_id", "$blogId")),
-                                new Document("$unwind",
-                                                new Document("path", "$_id")
-                                                                .append("preserveNullAndEmptyArrays", false))));
+                                                new Document("_id", "$_id.blogId"))));
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -855,6 +862,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                         new Document("$unset", "count"),
                                         new Document("$limit", 3L)));
                 }
+                // result.forEach((doc) -> users.add(converter.read(String.class, doc)));
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -863,7 +871,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                         try {
                                 jsonNode = objectMapper.readTree(converter.read(String.class, doc));
                                 // Access the value associated with "$oid"
-                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                String oidValue = jsonNode.get("_id")
+                                                // .get("$oid")
+                                                .asText();
                                 users.add(oidValue);
                         } catch (JsonMappingException e) {
                                 // TODO Auto-generated catch block
@@ -909,7 +919,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                         try {
                                 jsonNode = objectMapper.readTree(converter.read(String.class, doc));
                                 // Access the value associated with "$oid"
-                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
                                 tags.add(oidValue);
                         } catch (JsonMappingException e) {
                                 // TODO Auto-generated catch block

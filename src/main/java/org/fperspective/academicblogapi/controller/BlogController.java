@@ -120,7 +120,6 @@ public class BlogController {
         return blogs;
     }
 
-
     @GetMapping("/sort/text/{text}")
     @CrossOrigin
     //sort most popular blog by blogTitle
@@ -175,6 +174,16 @@ public class BlogController {
     @CrossOrigin
     public List<Blog> sortLatest() {
         List<Blog> blogs = blogService.sortLatest();
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/all")
+    @CrossOrigin
+    //sort all blog by like
+    public List<Blog> sortAll() {
+        List<Blog> blogs = blogService.sortAll();
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

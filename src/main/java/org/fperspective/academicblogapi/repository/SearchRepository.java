@@ -31,6 +31,8 @@ public interface SearchRepository {
 
     List<Blog> sortLatestBlog();
 
+    List<String> sortBlogAll();
+
     List<String> sortBlogByYear(String year);
 
     List<String> sortBlogByMonth(String year, String month);

@@ -116,6 +116,13 @@ public class BlogService {
         return searchRepository.sortLatestBlog();
     }
 
+    public List<Blog> sortAll() {
+        List<String> blogs = searchRepository.sortBlogAll();
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
     public List<Blog> sortYear(String year) {
         List<String> blogs = searchRepository.sortBlogByYear(year);
         List<Blog> blogList = new ArrayList<>();

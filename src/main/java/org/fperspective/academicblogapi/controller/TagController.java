@@ -93,11 +93,16 @@ public class TagController {
         return tags;
     }
 
-
     @DeleteMapping("/delete/{tagId}")
     @CrossOrigin
     public void delete(@PathVariable String tagId) {
         tagService.remove(tagId);
+    }
+
+    @DeleteMapping("/enable/{tagId}")
+    @CrossOrigin
+    public void enable(@PathVariable String tagId) {
+        tagService.enable(tagId);
     }
 
     @PostMapping("/show")
