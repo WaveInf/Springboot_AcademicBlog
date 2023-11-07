@@ -40,7 +40,9 @@ public class SearchRepositoryImpl implements SearchRepository {
 
         @Override
         // Blog search by blogName / tagName with autocorrect by 2 letters at 3rd index
-        public List<Blog> searchBlogByText(String text[], String[] operator) {
+        public List<Blog> searchBlogByText(String text, String time) {
+
+                Long timeLong = Long.parseLong(time);
 
                 final List<Blog> blogs = new ArrayList<>();
 
@@ -51,12 +53,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                 new Document("$search",
                                                 new Document("index", "blog")
                                                                 .append("text",
-                                                                                new Document("query", Arrays
-                                                                                                .asList(
-                                                                                                                text))
+                                                                                new Document("query", text)
                                                                                                 .append("path", Arrays
-                                                                                                                .asList(
-                                                                                                                                operator))
+                                                                                                                .asList("blogTitle"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
                                                                                                                                 2L)
@@ -66,7 +65,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
                                 new Document("$sort",
-                                                new Document("blogTitle", 1L)),
+                                                new Document("uploadDate", timeLong)),
                                 new Document("$limit", 5L)));
 
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
@@ -76,7 +75,9 @@ public class SearchRepositoryImpl implements SearchRepository {
 
         @Override
         // Blog search by categoryName with autocorrect by 2 letters at 3rd index
-        public List<Blog> searchBlogByCategory(String category) {
+        public List<Blog> searchBlogByCategory(String category, String time) {
+
+                Long timeLong = Long.parseLong(time);
 
                 final List<Blog> blogs = new ArrayList<>();
 
@@ -100,7 +101,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
                                 new Document("$sort",
-                                                new Document("blogTitle", 1L)),
+                                                new Document("uploadDate", timeLong)),
                                 new Document("$limit", 5L)));
 
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
@@ -109,7 +110,82 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<Blog> searchBlogByUser(String userId) {
+        // Blog search by categoryName with autocorrect by 2 letters at 3rd index
+        public List<Blog> searchBlogBySubject(String subject, String time) {
+
+                Long timeLong = Long.parseLong(time);
+
+                final List<Blog> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$search",
+                                                new Document("index", "blog")
+                                                                .append("text",
+                                                                                new Document("query", subject)
+                                                                                                .append("path", Arrays
+                                                                                                                .asList(
+                                                                                                                                "subject.subjectName"))
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                2L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                3L)))),
+
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$sort",
+                                                new Document("uploadDate", timeLong)),
+                                new Document("$limit", 5L)));
+
+                result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
+
+                return blogs;
+        }
+
+        @Override
+        // Blog search by categoryName with autocorrect by 2 letters at 3rd index
+        public List<Blog> searchBlogByTag(String tag, String time) {
+
+                Long timeLong = Long.parseLong(time);
+
+                final List<Blog> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$search",
+                                                new Document("index", "blog")
+                                                                .append("text",
+                                                                                new Document("query", tag)
+                                                                                                .append("path", Arrays
+                                                                                                                .asList(
+                                                                                                                                "btag.tagName"))
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                2L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                3L)))),
+
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$sort",
+                                                new Document("uploadDate", timeLong)),
+                                new Document("$limit", 5L)));
+
+                result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
+
+                return blogs;
+        }
+
+        @Override
+        public List<Blog> searchBlogByUser(String userId, String time) {
+
+                Long timeLong = Long.parseLong(time);
+
                 final List<Blog> blogs = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
@@ -122,7 +198,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("userId",
                                                                 new ObjectId(userId))),
                                 new Document("$sort",
-                                                new Document("uploadDate", -1L))));
+                                                new Document("uploadDate", timeLong))));
 
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
 
@@ -130,47 +206,250 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<String> findMostLikedBlog(String limit) {
-
-                Long limitLong = Long.parseLong(limit);
+        public List<String> findMostLikedBlogByText(String text) {
 
                 final List<String> blogs = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
                 AggregateIterable<Document> result;
-                if ("all".equals(limit)) {
-                        result = collection.aggregate(Arrays.asList(
-                                        new Document("$match",
-                                                        new Document("status", true)
-                                                                        .append("deleted", false)),
-                                        new Document("$unwind",
-                                                        new Document("path", "$like")
-                                                                        .append("preserveNullAndEmptyArrays", false)),
-                                        new Document("$group",
-                                                        new Document("_id", "$_id")
-                                                                        .append("like",
-                                                                                        new Document("$sum", 1L))),
-                                        new Document("$sort",
-                                                        new Document("like", -1L)),
-                                        new Document("$limit", limitLong),
-                                        new Document("$unset", "like")));
-                } else {
-                        result = collection.aggregate(Arrays.asList(
-                                        new Document("$match",
-                                                        new Document("status", true)
-                                                                        .append("deleted", false)),
-                                        new Document("$unwind",
-                                                        new Document("path", "$like")
-                                                                        .append("preserveNullAndEmptyArrays", false)),
-                                        new Document("$group",
-                                                        new Document("_id", "$_id")
-                                                                        .append("like",
-                                                                                        new Document("$sum", 1L))),
-                                        new Document("$sort",
-                                                        new Document("like", -1L)),
-                                        new Document("$unset", "like")));
-                }
+                result = collection.aggregate(Arrays.asList(
+                                new Document("$search",
+                                                new Document("index", "blog")
+                                                                .append("text",
+                                                                                new Document("query", text)
+                                                                                                .append("path", "blogTitle")
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                2L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                3L)))),
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$unwind",
+                                                new Document("path", "$like")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$group",
+                                                new Document("_id", "$_id")
+                                                                .append("like",
+                                                                                new Document("$sum", 1L))),
+                                new Document("$sort",
+                                                new Document("like", -1L)),
+                                new Document("$unset", "like")));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> findMostLikedBlogByCategory(String category) {
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result;
+                result = collection.aggregate(Arrays.asList(
+                                new Document("$search",
+                                                new Document("index", "blog")
+                                                                .append("text",
+                                                                                new Document("query", category)
+                                                                                                .append("path", "category.categoryName")
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                2L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                3L)))),
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$unwind",
+                                                new Document("path", "$like")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$group",
+                                                new Document("_id", "$_id")
+                                                                .append("like",
+                                                                                new Document("$sum", 1L))),
+                                new Document("$sort",
+                                                new Document("like", -1L)),
+                                new Document("$unset", "like")));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> findMostLikedBlogBySubject(String subject) {
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result;
+                result = collection.aggregate(Arrays.asList(
+                                new Document("$search",
+                                                new Document("index", "blog")
+                                                                .append("text",
+                                                                                new Document("query", subject)
+                                                                                                .append("path", "subject.subjectName")
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                2L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                3L)))),
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$unwind",
+                                                new Document("path", "$like")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$group",
+                                                new Document("_id", "$_id")
+                                                                .append("like",
+                                                                                new Document("$sum", 1L))),
+                                new Document("$sort",
+                                                new Document("like", -1L)),
+                                new Document("$unset", "like")));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> findMostLikedBlogByTag(String tag) {
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result;
+                result = collection.aggregate(Arrays.asList(
+                                new Document("$search",
+                                                new Document("index", "blog")
+                                                                .append("text",
+                                                                                new Document("query", tag)
+                                                                                                .append("path", "btag.tagName")
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                2L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                3L)))),
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$unwind",
+                                                new Document("path", "$like")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$group",
+                                                new Document("_id", "$_id")
+                                                                .append("like",
+                                                                                new Document("$sum", 1L))),
+                                new Document("$sort",
+                                                new Document("like", -1L)),
+                                new Document("$unset", "like")));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> findMostLikedBlogByUser(String userId) {
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result;
+                result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)),
+                                new Document("$match",
+                                                new Document("userId",
+                                                                new ObjectId(userId))),
+                                new Document("$unwind",
+                                                new Document("path", "$like")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$group",
+                                                new Document("_id", "$_id")
+                                                                .append("like",
+                                                                                new Document("$sum", 1L))),
+                                new Document("$sort",
+                                                new Document("like", -1L)),
+                                new Document("$unset", "like")));
 
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();

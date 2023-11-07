@@ -9,13 +9,25 @@ import org.springframework.stereotype.Repository;
 public interface SearchRepository {
 
     //Blog method
-    List<Blog> searchBlogByText(String text[], String[] operator);
+    List<Blog> searchBlogByText(String text, String time);
 
-    List<Blog> searchBlogByCategory(String category);
+    List<Blog> searchBlogByCategory(String category, String time);
 
-    List<Blog> searchBlogByUser(String userId);
+    List<Blog> searchBlogBySubject(String subject, String time);
 
-    List<String> findMostLikedBlog(String limit);
+    List<Blog> searchBlogByTag(String tag, String time);
+
+    List<Blog> searchBlogByUser(String userId, String time);
+
+    List<String> findMostLikedBlogByText(String text);
+
+    List<String> findMostLikedBlogByCategory(String category);
+
+    List<String> findMostLikedBlogBySubject(String subject);
+
+    List<String> findMostLikedBlogByTag(String tag);
+
+    List<String> findMostLikedBlogByUser(String userId);
 
     List<Blog> sortLatestBlog();
 

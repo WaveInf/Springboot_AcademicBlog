@@ -57,20 +57,56 @@ public class BlogService {
         return blogRepository.save(existingBlog);
     }
 
-    public List<Blog> search(String text[], String[] operator) {
+    public List<Blog> searchByText(String text, String operator) {
         return searchRepository.searchBlogByText(text,operator);
     }
 
-    public List<Blog> searchByCategory(String categoryName) {
-        return searchRepository.searchBlogByCategory(categoryName);
+    public List<Blog> searchByCategory(String categoryName, String time) {
+        return searchRepository.searchBlogByCategory(categoryName, time);
     }
 
-    public List<Blog> searchByUser(String userId) {
-        return searchRepository.searchBlogByUser(userId);
+     public List<Blog> searchBySubject(String subjectName, String time) {
+        return searchRepository.searchBlogBySubject(subjectName, time);
     }
 
-    public List<Blog> sortByMostLiked(String limit) {
-        List<String> blogs = searchRepository.findMostLikedBlog(limit);
+     public List<Blog> searchByTag(String tagName, String time) {
+        return searchRepository.searchBlogByTag(tagName, time);
+    }
+
+    public List<Blog> searchByUser(String userId, String time) {
+        return searchRepository.searchBlogByUser(userId, time);
+    }
+
+    public List<Blog> findMostLikedBlogByText(String text) {
+        List<String> blogs = searchRepository.findMostLikedBlogByText(text);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> findMostLikedBlogByCategory(String category) {
+        List<String> blogs = searchRepository.findMostLikedBlogByCategory(category);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> findMostLikedBlogBySubject(String subject) {
+        List<String> blogs = searchRepository.findMostLikedBlogBySubject(subject);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> findMostLikedBlogByTag(String tag) {
+        List<String> blogs = searchRepository.findMostLikedBlogByTag(tag);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> findMostLikedBlogByUser(String userId) {
+        List<String> blogs = searchRepository.findMostLikedBlogByUser(userId);
         List<Blog> blogList = new ArrayList<>();
         blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
         return blogList;

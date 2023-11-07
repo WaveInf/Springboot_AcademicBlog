@@ -65,29 +65,67 @@ public class BlogController {
         return blog;
     }
 
-    @GetMapping("/search/{text}/{operator}")
+    @GetMapping("/search/text/{text}/{time}")
     @CrossOrigin
-    public List<Blog> search(@PathVariable("text") String[] text, @PathVariable("operator") String[] operator) {
-        List<Blog> blogs = blogService.search(text, operator);
+    //time: 1 or -1, 1 for oldest, -1 for newest
+    //search by blogTitle
+    public List<Blog> searchByText(@PathVariable("text") String text, @PathVariable("time") String time) {
+        List<Blog> blogs = blogService.searchByText(text, time);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;
     }
 
-    @GetMapping("/search/user/{userId}")
+    @GetMapping("/search/category/{categoryName}/{time}")
     @CrossOrigin
-    public List<Blog> searchByUser(@PathVariable String userId) {
-        List<Blog> blogs = blogService.searchByUser(userId);
+    //time: 1 or -1, 1 for oldest, -1 for newest
+    //search by categoryName
+    public List<Blog> searchByCategory(@PathVariable("categoryName") String categoryName, @PathVariable("time") String time) {
+        List<Blog> blogs = blogService.searchByCategory(categoryName, time);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/search/subject/{subjectName}/{time}")
+    @CrossOrigin
+    //time: 1 or -1, 1 for oldest, -1 for newest
+    //search by subjectName
+    public List<Blog> searchBySubject(@PathVariable("subjectName") String subjectName, @PathVariable("time") String time) {
+        List<Blog> blogs = blogService.searchBySubject(subjectName, time);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/search/tag/{tagName}/{time}")
+    @CrossOrigin
+    //time: 1 or -1, 1 for oldest, -1 for newest
+    //search by tagName
+    public List<Blog> searchByTag(@PathVariable("tagName") String tagName, @PathVariable("time") String time) {
+        List<Blog> blogs = blogService.searchByTag(tagName, time);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/search/user/{userId}/{time}")
+    @CrossOrigin
+    //time: 1 or -1, 1 for oldest, -1 for newest
+    //search by userId
+    public List<Blog> searchByUser(@PathVariable("userId") String userId, @PathVariable("time") String time) {
+        List<Blog> blogs = blogService.searchByUser(userId, time);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;
     }
 
 
-    @GetMapping("/approve/{operator}")
+    @GetMapping("/sort/text/{text}")
     @CrossOrigin
-    public List<Blog> findUnapprovedBlogs(@PathVariable String operator) {
-        List<Blog> blogs = blogService.findUnapprovedBlogs(operator);
+    //sort most popular blog by blogTitle
+    public List<Blog> sortByMostLikedByText(@PathVariable("text") String text) {
+        List<Blog> blogs = blogService.findMostLikedBlogByText(text);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;
@@ -95,17 +133,39 @@ public class BlogController {
 
     @GetMapping("/sort/category/{categoryName}")
     @CrossOrigin
-    public List<Blog> searchByCategory(@PathVariable String categoryName) {
-        List<Blog> blogs = blogService.searchByCategory(categoryName);
+    //sort most popular blog by categoryName
+    public List<Blog> sortByMostLikedByCategory(@PathVariable("categoryName") String categoryName) {
+        List<Blog> blogs = blogService.findMostLikedBlogByCategory(categoryName);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;
     }
 
-    @GetMapping("/sort/like/{limit}")
+    @GetMapping("/sort/subject/{subjectName}")
     @CrossOrigin
-    public List<Blog> sortByMostLiked(@PathVariable String limit) {
-        List<Blog> blogs = blogService.sortByMostLiked(limit);
+    //sort most popular blog by subjectName
+    public List<Blog> sortByMostLikedBySubject(@PathVariable("subjectName") String subjectName) {
+        List<Blog> blogs = blogService.findMostLikedBlogBySubject(subjectName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/tag/{tagName}")
+    @CrossOrigin
+    //sort most popular blog by tagName
+    public List<Blog> sortByMostLikedByTag(@PathVariable("tagName") String tagName) {
+        List<Blog> blogs = blogService.findMostLikedBlogByTag(tagName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/user/{userId}")
+    @CrossOrigin
+    //sort most popular blog by blogTitle
+    public List<Blog> sortByMostLikedByUser(@PathVariable("userId") String userId) {
+        List<Blog> blogs = blogService.findMostLikedBlogByUser(userId);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;
@@ -147,6 +207,15 @@ public class BlogController {
         return blogs;
     }
 
+    @GetMapping("/approve/{operator}")
+    @CrossOrigin
+    public List<Blog> findUnapprovedBlogs(@PathVariable String operator) {
+        List<Blog> blogs = blogService.findUnapprovedBlogs(operator);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
     @DeleteMapping("/delete/{blogId}")
     // @PreAuthorize("hasRole('ADMIN')")
     @CrossOrigin
@@ -165,7 +234,6 @@ public class BlogController {
     @CrossOrigin
     public Blog save(@RequestBody Blog blog){
         blog.setStatus(false);
-        blog.setUploadDate(null);
         blog.setDeleted(false);
         blog.setCommentId(new String[0]);
         blog.setLike(new String[0]);
