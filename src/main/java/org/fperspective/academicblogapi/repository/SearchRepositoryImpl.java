@@ -700,8 +700,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                 .append("else", "NA"))))),
                                 new Document("$match",
                                                 new Document("_id.year", yearLong)
-                                                .append("_id.month", monthLong)
-                                                .append("_id.week", weekLong)),
+                                                                .append("_id.month", monthLong)
+                                                                .append("_id.week", weekLong)),
                                 new Document("$sort",
                                                 new Document("_id.numberOfLike", -1L)),
                                 new Document("$project",
@@ -955,6 +955,74 @@ public class SearchRepositoryImpl implements SearchRepository {
                 Integer tagCount = count.size();
 
                 return tagCount;
+        }
+
+        @Override
+        public List<String> findTagByBlog(String blogId) {
+
+                List<String> tags = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("_id",
+                                                new ObjectId(blogId))),
+                                new Document("$unwind",
+                                                new Document("path", "$btag")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$project",
+                                                new Document("_id", "$btag._id"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                tags.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+                
+                return tags;
+        }
+
+        @Override
+        public List<BTag> findTagByName(String text){
+                final List<BTag> tags = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("BTag");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+
+                                new Document("$search",
+                                                new Document("index", "btag")
+                                                                .append("text",
+                                                                                new Document("query", text)
+                                                                                                .append("path", Arrays
+                                                                                                                .asList("tagName"))
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                2L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                3L)))),
+
+                                new Document("$match",
+                                                new Document("status", true))));
+
+                result.forEach((doc) -> tags.add(converter.read(BTag.class, doc))); 
+                
+                return tags;
         }
 
 }

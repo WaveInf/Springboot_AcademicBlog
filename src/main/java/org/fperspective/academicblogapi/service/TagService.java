@@ -44,18 +44,33 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
+    public List<BTag> search(String text){
+        List<BTag> tags = searchRepository.findTagByName(text);
+        return tags;
+    }
+
     public List<BTag> findMostUsedTag(String limit) {
         List<String> tags = searchRepository.findMostUsedTag(limit);
         List<BTag> tagList = new ArrayList<>();
-        tags.forEach((tag) -> tagList.add(tagRepository.findById(tag).orElse(null)));
+        tags.forEach((tag) ->{
+            BTag btag = tagRepository.findById(tag).orElse(null);
+            if(btag.isStatus()){
+                tagList.add(btag);
+            }
+        });
         return tagList;
     }
 
-    public List<String> test(String limit) {
-        List<String> tags = searchRepository.findMostUsedTag(limit);
-        // List<BTag> tagList = new ArrayList<>();
-        // tags.forEach((tag) -> tagList.add(tagRepository.findById(tag).get()));
-        return tags;
+    public List<BTag> findTagByBlog(String blogId) {
+        List<String> tags = searchRepository.findTagByBlog(blogId);
+        List<BTag> tagList = new ArrayList<>();
+        tags.forEach((tag) -> {
+            BTag btag = tagRepository.findById(tag).orElse(null);
+            if(btag.isStatus()){
+                tagList.add(btag);
+            }
+        });
+        return tagList;
     }
 
     public Integer findMostUsedTagCount(String tagName) {

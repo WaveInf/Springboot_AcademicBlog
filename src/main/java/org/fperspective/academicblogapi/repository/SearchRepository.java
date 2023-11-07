@@ -1,6 +1,8 @@
 package org.fperspective.academicblogapi.repository;
 
 import java.util.List;
+
+import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
 import org.springframework.stereotype.Repository;
@@ -56,5 +58,9 @@ public interface SearchRepository {
     List<String> findMostUsedTag(String limit);
 
     Integer findMostUsedTagCount(String tagName);
+
+    List<String> findTagByBlog(String blogId);
+
+    List<BTag> findTagByName(String text);
 
 }

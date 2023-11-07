@@ -73,11 +73,21 @@ public class TagController {
     }
 
 
-    @GetMapping("/test/{limitString}")
+    @GetMapping("/search/blog/{blogId}")
     @CrossOrigin
     //Show most popular tags and its used count as Hashmap
-    public List<String> test(@PathVariable String limitString) {
-        List<String> tags = tagService.test(limitString);
+    public List<BTag> findTagByBlog(@PathVariable String blogId) {
+        List<BTag> tags = tagService.findTagByBlog(blogId);
+        if (tags == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return tags;
+    }
+
+    @GetMapping("/search/text/{text}")
+    @CrossOrigin
+    //Show most popular tags and its used count as Hashmap
+    public List<BTag> findTagByName(@PathVariable String text) {
+        List<BTag> tags = tagService.search(text);
         if (tags == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return tags;
