@@ -59,9 +59,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                 .asList("blogTitle"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                1L)
+                                                                                                                                2L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                4L)))),
+                                                                                                                                                3L)))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
