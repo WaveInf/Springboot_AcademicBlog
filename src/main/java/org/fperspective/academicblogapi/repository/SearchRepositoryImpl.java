@@ -61,7 +61,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                 new Document("maxEdits",
                                                                                                                                 2L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                2L)))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
