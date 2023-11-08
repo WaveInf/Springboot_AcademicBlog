@@ -2,6 +2,7 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.fperspective.academicblogapi.model.Subject;
 import org.fperspective.academicblogapi.service.SubjectService;
@@ -61,10 +62,57 @@ public class SubjectController {
         return subject;
     }
 
+    @GetMapping("/sort/{limit}")
+    @CrossOrigin
+    //Show most popular subjects and its used count as Hashmap
+    public List<Subject> search(@PathVariable String limit) {
+        List<Subject> subjects = subjectService.findMostUsedSubject(limit);
+        if (subjects == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return subjects;
+    }
+
+
+    @GetMapping("/search/blog/{blogId}")
+    @CrossOrigin
+    //Show most popular subjects and its used count as Hashmap
+    public List<Subject> findTagByBlog(@PathVariable String blogId) {
+        List<Subject> subjects = subjectService.findTagByBlog(blogId);
+        if (subjects == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return subjects;
+    }
+
+    @GetMapping("/search/text/{text}")
+    @CrossOrigin
+    //Show most popular subjects and its used count as Hashmap
+    public List<Subject> findTagByName(@PathVariable String text) {
+        List<Subject> subjects = subjectService.search(text);
+        if (subjects == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return subjects;
+    }
+
+    @GetMapping("/count/{subjectName}")
+    @CrossOrigin
+    //Show most popular subjects and its used count as Hashmap
+    public Integer searchCount(@PathVariable String subjectName) {
+        Integer subjects = subjectService.findMostUsedTagCount(subjectName);
+        if (subjects == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return subjects;
+    }
+
     @DeleteMapping("/delete/{subjectId}")
     @CrossOrigin
     public void delete(@PathVariable String subjectId) {
         subjectService.remove(subjectId);
+    }
+
+    @DeleteMapping("/enable/{subjectId}")
+    @CrossOrigin
+    public void enable(@PathVariable String subjectId) {
+        subjectService.enable(subjectId);
     }
 
     @PostMapping("/show")

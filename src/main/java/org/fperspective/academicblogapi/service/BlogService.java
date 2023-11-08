@@ -144,6 +144,47 @@ public class BlogService {
         return blogList;
     }
 
+    public List<Blog> sortYearByTag(String year, String tag) {
+        List<String> blogs = searchRepository.sortBlogByYearAndTag(year, tag);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> sortMonthByTag(String year, String month, String tag) {
+        List<String> blogs = searchRepository.sortBlogByMonthAndTag(year, month, tag);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> sortWeekByTag(String year, String month, String week, String tag) {
+       List<String> blogs = searchRepository.sortBlogByWeekAndTag(year, month, week, tag);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> sortYearBySubject(String year, String subject) {
+        List<String> blogs = searchRepository.sortBlogByYearAndSubject(year, subject);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> sortMonthBySubject(String year, String month, String subject) {
+        List<String> blogs = searchRepository.sortBlogByMonthAndSubject(year, month, subject);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> sortWeekBySubject(String year, String month, String week, String subject) {
+       List<String> blogs = searchRepository.sortBlogByWeekAndSubject(year, month, week, subject);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
 
     public List<Blog> findUnapprovedBlogs(String operator){
         List<Blog> blogs = searchRepository.findUnapprovedBlogs(operator);

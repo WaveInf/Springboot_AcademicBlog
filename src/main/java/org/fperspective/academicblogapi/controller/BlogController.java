@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,7 +188,7 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/year/{year}")
+    @GetMapping("/sort/blog/year/{year}")
     @CrossOrigin
     public List<Blog> sortYear(@PathVariable String year) {
         List<Blog> blogs = blogService.sortYear(year);
@@ -198,7 +197,7 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/month/{year}/{month}")
+    @GetMapping("/sort/blog/month/{year}/{month}")
     @CrossOrigin
     public List<Blog> sortMonth(@PathVariable("year") String year, @PathVariable("month") String month) {
         List<Blog> blogs = blogService.sortMonth(year, month);
@@ -207,10 +206,64 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/week/{year}/{month}/{week}")
+    @GetMapping("/sort/blog/week/{year}/{month}/{week}")
     @CrossOrigin
     public List<Blog> sortWeek(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week) {
         List<Blog> blogs = blogService.sortWeek(year, month, week);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/tag/year/{year}/{tagName}")
+    @CrossOrigin
+    public List<Blog> sortYearByTag(@PathVariable("year") String year, @PathVariable("tagName") String tagName) {
+        List<Blog> blogs = blogService.sortYearByTag(year, tagName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/tag/month/{year}/{month}/{tagName}")
+    @CrossOrigin
+    public List<Blog> sortMonth(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("tagName") String tagName) {
+        List<Blog> blogs = blogService.sortMonthByTag(year, month, tagName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/tag/week/{year}/{month}/{week}/{tagName}")
+    @CrossOrigin
+    public List<Blog> sortWeek(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week, @PathVariable("tagName") String tagName) {
+        List<Blog> blogs = blogService.sortWeekByTag(year, month, week, tagName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/subject/year/{year}/{subjectName}")
+    @CrossOrigin
+    public List<Blog> sortYearBySubject(@PathVariable("year") String year, @PathVariable("subjectName") String subjectName) {
+        List<Blog> blogs = blogService.sortYearBySubject(year, subjectName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/subject/month/{year}/{month}/{subjectName}")
+    @CrossOrigin
+    public List<Blog> sortMonthBySubject(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("subjectName") String subjectName) {
+        List<Blog> blogs = blogService.sortMonthBySubject(year, month, subjectName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/subject/week/{year}/{month}/{week}/{subjectName}")
+    @CrossOrigin
+    public List<Blog> sortWeekBySubject(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week, @PathVariable("subjectName") String subjectName) {
+        List<Blog> blogs = blogService.sortWeekBySubject(year, month, week, subjectName);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

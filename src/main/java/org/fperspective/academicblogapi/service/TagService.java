@@ -34,7 +34,7 @@ public class TagService {
         return tagRepository.save(existingTag);
     }
 
-     public BTag enable(String tagId) {
+    public BTag enable(String tagId) {
         BTag existingTag = tagRepository.findById(tagId).get();
         existingTag.setStatus(true);
         return tagRepository.save(existingTag);

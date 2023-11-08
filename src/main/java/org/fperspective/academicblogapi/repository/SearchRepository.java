@@ -5,6 +5,7 @@ import java.util.List;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
+import org.fperspective.academicblogapi.model.Subject;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -41,9 +42,19 @@ public interface SearchRepository {
 
     List<String> sortBlogByWeek(String year, String month, String week);
 
-    List<Blog> findUnapprovedBlogs(String operator);
+    List<String> sortBlogByYearAndSubject(String year, String subject);
 
-    // String findMostLikedBlog();
+    List<String> sortBlogByMonthAndSubject(String year, String month, String subject);
+
+    List<String> sortBlogByWeekAndSubject(String year, String month, String week, String subject);
+
+    List<String> sortBlogByYearAndTag(String year, String tag);
+
+    List<String> sortBlogByMonthAndTag(String year, String month, String tag);
+
+    List<String> sortBlogByWeekAndTag(String year, String month, String week, String tag);
+
+    List<Blog> findUnapprovedBlogs(String operator);
 
     //User method
     List<Credential> searchUserByText(String text);
@@ -62,5 +73,15 @@ public interface SearchRepository {
     List<String> findTagByBlog(String blogId);
 
     List<BTag> findTagByName(String text);
+
+    //Subject method
+
+    List<String> findMostUsedSubject(String limit);
+
+    Integer findMostUsedSubjectCount(String subjectName);
+
+    List<String> findSubjectByBlog(String blogId);
+
+    List<Subject> findSubjectByName(String text);
 
 }

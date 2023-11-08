@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
+import org.fperspective.academicblogapi.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
@@ -58,9 +59,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                 .asList("blogTitle"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
@@ -93,9 +94,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                 "category.categoryName"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
 
                                 new Document("$match",
                                                 new Document("status", true)
@@ -129,9 +130,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                 "subject.subjectName"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
 
                                 new Document("$match",
                                                 new Document("status", true)
@@ -165,9 +166,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                 "btag.tagName"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
 
                                 new Document("$match",
                                                 new Document("status", true)
@@ -221,9 +222,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                 .append("path", "blogTitle")
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
@@ -276,9 +277,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                 .append("path", "category.categoryName")
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
@@ -331,9 +332,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                 .append("path", "subject.subjectName")
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
@@ -386,9 +387,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                 .append("path", "btag.tagName")
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
@@ -729,6 +730,429 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
+        public List<String> sortBlogByYearAndSubject(String year, String subject) {
+
+                Long yearLong = Long.parseLong(year);
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("subject", "$subject")
+                                                                                .append("year",
+                                                                                                new Document("$year",
+                                                                                                                "$uploadDate"))
+                                                                                .append("numberOfLike",
+                                                                                                new Document("$cond",
+                                                                                                                new Document("if",
+                                                                                                                                new Document("$isArray",
+                                                                                                                                                "$like"))
+                                                                                                                                .append("then",
+                                                                                                                                                new Document("$size",
+                                                                                                                                                                "$like"))
+                                                                                                                                .append("else", "NA"))))),
+                                new Document("$match",
+                                                new Document("_id.year", yearLong)),
+                                new Document("$unwind",
+                                                new Document("path", "$_id.subject")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
+                                new Document("$match",
+                                                new Document("_id.subject.subjectName", subject)),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> sortBlogByMonthAndSubject(String year, String month, String subject) {
+
+                Long yearLong = Long.parseLong(year);
+
+                Long monthLong = Long.parseLong(month);
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("subject", "$subject")
+                                                                                .append("year",
+                                                                                                new Document("$year",
+                                                                                                                "$uploadDate"))
+                                                                                .append("month",
+                                                                                                new Document("$month",
+                                                                                                                "$uploadDate"))
+                                                                                .append("numberOfLike",
+                                                                                                new Document("$cond",
+                                                                                                                new Document("if",
+                                                                                                                                new Document("$isArray",
+                                                                                                                                                "$like"))
+                                                                                                                                .append("then",
+                                                                                                                                                new Document("$size",
+                                                                                                                                                                "$like"))
+                                                                                                                                .append("else", "NA"))))),
+                                new Document("$match",
+                                                new Document("_id.year", yearLong)
+                                                                .append("_id.month", monthLong)),
+                                new Document("$unwind",
+                                                new Document("path", "$_id.subject")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
+                                new Document("$match",
+                                                new Document("_id.subject.subjectName", subject)),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> sortBlogByWeekAndSubject(String year, String month, String week, String subject) {
+
+                Long yearLong = Long.parseLong(year);
+
+                Long monthLong = Long.parseLong(month);
+
+                Long weekLong = Long.parseLong(week);
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("subject", "$subject")
+                                                                                .append("year",
+                                                                                                new Document("$year",
+                                                                                                                "$uploadDate"))
+                                                                                .append("month",
+                                                                                                new Document("$month",
+                                                                                                                "$uploadDate"))
+                                                                                .append("week",
+                                                                                                new Document("$week",
+                                                                                                                "$uploadDate"))
+                                                                                .append("day",
+                                                                                                new Document("$dayOfMonth",
+                                                                                                                "$uploadDate"))
+                                                                                .append("numberOfLike",
+                                                                                                new Document("$cond",
+                                                                                                                new Document("if",
+                                                                                                                                new Document("$isArray",
+                                                                                                                                                "$like"))
+                                                                                                                                .append("then",
+                                                                                                                                                new Document("$size",
+                                                                                                                                                                "$like"))
+                                                                                                                                .append("else", "NA"))))),
+                                new Document("$match",
+                                                new Document("_id.year", yearLong)
+                                                                .append("_id.month", monthLong)
+                                                                .append("_id.week", weekLong)),
+                                new Document("$unwind",
+                                                new Document("path", "$_id.subject")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
+                                new Document("$match",
+                                                new Document("_id.subject.subjectName", subject)),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> sortBlogByYearAndTag(String year, String tag) {
+
+                Long yearLong = Long.parseLong(year);
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("btag", "$btag")
+                                                                                .append("year",
+                                                                                                new Document("$year",
+                                                                                                                "$uploadDate"))
+                                                                                .append("month",
+                                                                                                new Document("$month",
+                                                                                                                "$uploadDate"))
+                                                                                .append("week",
+                                                                                                new Document("$week",
+                                                                                                                "$uploadDate"))
+                                                                                .append("day",
+                                                                                                new Document("$dayOfMonth",
+                                                                                                                "$uploadDate"))
+                                                                                .append("numberOfLike",
+                                                                                                new Document("$cond",
+                                                                                                                new Document("if",
+                                                                                                                                new Document("$isArray",
+                                                                                                                                                "$like"))
+                                                                                                                                .append("then",
+                                                                                                                                                new Document("$size",
+                                                                                                                                                                "$like"))
+                                                                                                                                .append("else", "NA"))))),
+                                new Document("$match",
+                                                new Document("_id.year", yearLong)),
+                                new Document("$unwind",
+                                                new Document("path", "$_id.subject")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
+                                new Document("$match",
+                                                new Document("_id.btag.tagName", tag)),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> sortBlogByMonthAndTag(String year, String month, String tag) {
+
+                Long yearLong = Long.parseLong(year);
+
+                Long monthLong = Long.parseLong(month);
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("btag", "$btag")
+                                                                                .append("year",
+                                                                                                new Document("$year",
+                                                                                                                "$uploadDate"))
+                                                                                .append("month",
+                                                                                                new Document("$month",
+                                                                                                                "$uploadDate"))
+                                                                                .append("week",
+                                                                                                new Document("$week",
+                                                                                                                "$uploadDate"))
+                                                                                .append("day",
+                                                                                                new Document("$dayOfMonth",
+                                                                                                                "$uploadDate"))
+                                                                                .append("numberOfLike",
+                                                                                                new Document("$cond",
+                                                                                                                new Document("if",
+                                                                                                                                new Document("$isArray",
+                                                                                                                                                "$like"))
+                                                                                                                                .append("then",
+                                                                                                                                                new Document("$size",
+                                                                                                                                                                "$like"))
+                                                                                                                                .append("else", "NA"))))),
+                                new Document("$match",
+                                                new Document("_id.year", yearLong)
+                                                                .append("_id.month", monthLong)),
+                                new Document("$unwind",
+                                                new Document("path", "$_id.subject")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
+                                new Document("$match",
+                                                new Document("_id.btag.tagName", tag)),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public List<String> sortBlogByWeekAndTag(String year, String month, String week, String tag) {
+
+                Long yearLong = Long.parseLong(year);
+
+                Long monthLong = Long.parseLong(month);
+
+                Long weekLong = Long.parseLong(week);
+
+                final List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("btag", "$btag")
+                                                                                .append("year",
+                                                                                                new Document("$year",
+                                                                                                                "$uploadDate"))
+                                                                                .append("month",
+                                                                                                new Document("$month",
+                                                                                                                "$uploadDate"))
+                                                                                .append("week",
+                                                                                                new Document("$week",
+                                                                                                                "$uploadDate"))
+                                                                                .append("day",
+                                                                                                new Document("$dayOfMonth",
+                                                                                                                "$uploadDate"))
+                                                                                .append("numberOfLike",
+                                                                                                new Document("$cond",
+                                                                                                                new Document("if",
+                                                                                                                                new Document("$isArray",
+                                                                                                                                                "$like"))
+                                                                                                                                .append("then",
+                                                                                                                                                new Document("$size",
+                                                                                                                                                                "$like"))
+                                                                                                                                .append("else", "NA"))))),
+                                new Document("$match",
+                                                new Document("_id.year", yearLong)
+                                                                .append("_id.month", monthLong)
+                                                                .append("_id.week", weekLong)),
+                                new Document("$unwind",
+                                                new Document("path", "$_id.subject")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$sort",
+                                                new Document("_id.numberOfLike", -1L)),
+                                new Document("$match",
+                                                new Document("_id.btag.tagName", tag)),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id").get("$oid").asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
         public List<Blog> findUnapprovedBlogs(String operator) {
 
                 final List<Blog> blogs = new ArrayList<>();
@@ -806,9 +1230,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                 .asList("campus"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
 
                                 new Document("$match",
                                                 new Document("status", true)),
@@ -887,29 +1311,44 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return users;
         }
 
+
         /*
          * TAG METHOD
          */
+
 
         @Override
         // Query to find most used tags and its used count
         public List<String> findMostUsedTag(String limit) {
 
-                Long limitLong = Long.parseLong(limit);
-
                 final List<String> tags = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$match",
-                                                new Document("status", true)),
-                                new Document("$unwind",
-                                                new Document("path", "$btag").append("preserveNullAndEmptyArrays",
-                                                                false)),
-                                new Document("$sortByCount", "$btag._id"),
-                                // new Document("$unset", "count"),
-                                new Document("$limit", limitLong)));
+                AggregateIterable<Document> result;
+                if ("all".equals(limit)) {
+
+                        result = collection.aggregate(Arrays.asList(
+                                        new Document("$match",
+                                                        new Document("status", true)),
+                                        new Document("$unwind",
+                                                        new Document("path", "$btag").append(
+                                                                        "preserveNullAndEmptyArrays",
+                                                                        false)),
+                                        new Document("$sortByCount", "$btag._id")));
+                } else {
+                        Long limitLong = Long.parseLong(limit);
+
+                        result = collection.aggregate(Arrays.asList(
+                                        new Document("$match",
+                                                        new Document("status", true)),
+                                        new Document("$unwind",
+                                                        new Document("path", "$btag").append(
+                                                                        "preserveNullAndEmptyArrays",
+                                                                        false)),
+                                        new Document("$sortByCount", "$btag._id"),
+                                        new Document("$limit", limitLong)));
+                }
 
                 result.forEach((doc) -> {
                         ObjectMapper objectMapper = new ObjectMapper();
@@ -942,14 +1381,9 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-                                new Document("$search",
-                                                new Document("index", "blog")
-                                                                .append("text",
-                                                                                new Document("query", tagName)
-                                                                                                .append("path", "btag.tagName"))),
-                                new Document("$match",
-                                                new Document("status", true))));
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("btag.tagName", tagName))));
                 result.forEach((doc) -> count.add(converter.read(BTag.class, doc)));
 
                 Integer tagCount = count.size();
@@ -969,7 +1403,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new ObjectId(blogId))),
                                 new Document("$unwind",
                                                 new Document("path", "$btag")
-                                                                .append("preserveNullAndEmptyArrays", true)),
+                                                                .append("preserveNullAndEmptyArrays", false)),
                                 new Document("$project",
                                                 new Document("_id", "$btag._id"))));
 
@@ -993,12 +1427,12 @@ public class SearchRepositoryImpl implements SearchRepository {
                                 e.printStackTrace();
                         }
                 });
-                
+
                 return tags;
         }
 
         @Override
-        public List<BTag> findTagByName(String text){
+        public List<BTag> findTagByName(String text) {
                 final List<BTag> tags = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
@@ -1013,16 +1447,153 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                 .asList("tagName"))
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
-                                                                                                                                2L)
+                                                                                                                                1L)
                                                                                                                                 .append("prefixLength",
-                                                                                                                                                3L)))),
+                                                                                                                                                4L)))),
 
                                 new Document("$match",
                                                 new Document("status", true))));
 
-                result.forEach((doc) -> tags.add(converter.read(BTag.class, doc))); 
-                
+                result.forEach((doc) -> tags.add(converter.read(BTag.class, doc)));
+
                 return tags;
         }
+
+
+        /*
+         * SUBJECT METHOD
+         */
+
+
+         @Override
+        // Query to find most used tags and its used count
+        public List<String> findMostUsedSubject(String limit) {
+
+                final List<String> subjects = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result;
+                if ("all".equals(limit)) {
+
+                        result = collection.aggregate(Arrays.asList(
+                                        new Document("$match",
+                                                        new Document("status", true)),
+                                        new Document("$unwind",
+                                                        new Document("path", "$subject").append(
+                                                                        "preserveNullAndEmptyArrays",
+                                                                        false)),
+                                        new Document("$sortByCount", "$subject._id")));
+                } else {
+                        Long limitLong = Long.parseLong(limit);
+
+                        result = collection.aggregate(Arrays.asList(
+                                        new Document("$match",
+                                                        new Document("status", true)),
+                                        new Document("$unwind",
+                                                        new Document("path", "$subject").append(
+                                                                        "preserveNullAndEmptyArrays",
+                                                                        false)),
+                                        new Document("$sortByCount", "$subject._id"),
+                                        new Document("$limit", limitLong)));
+                }
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                subjects.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return subjects;
+        }
+
+        @Override
+        public Integer findMostUsedSubjectCount(String subjectName) {
+
+                final List<Subject> count = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("subject.subjectName", subjectName))));
+                result.forEach((doc) -> count.add(converter.read(Subject.class, doc)));
+
+                Integer subjectCount = count.size();
+
+                return subjectCount;
+        }
+
+        @Override
+        public List<String> findSubjectByBlog(String blogId) {
+
+                List<String> subjects = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("_id",
+                                                new ObjectId(blogId))),
+                                new Document("$unwind",
+                                                new Document("path", "$subject")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$project",
+                                                new Document("_id", "$subject._id"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                subjects.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return subjects;
+        }
+
+        @Override
+        public List<Subject> findSubjectByName(String text) {
+                final List<Subject> subjects = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Subject");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("status", true)
+                                                .append("subjectName", text))));
+
+                result.forEach((doc) -> subjects.add(converter.read(Subject.class, doc)));
+
+                return subjects;
+        }
+
 
 }

@@ -54,7 +54,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             String pattern = "([a-zA-Z]{2})(\\d+)";
             Pattern r = Pattern.compile(pattern);
             Matcher m = r.matcher(email);
-            ObjectId userID = new ObjectId();
+            // ObjectId userID = new ObjectId();
             String result = null;
             if(m.find()){
                 result = m.group(1).toLowerCase();
@@ -74,7 +74,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             // SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	        // Date date = new Date();
             // System.out.println(formatter.format(date));
-            Collection<? extends GrantedAuthority> authority = authentication.getAuthorities();
+            // Collection<? extends GrantedAuthority> authority = authentication.getAuthorities();
 
             if("fpt.edu.vn".equals(organization) || "fe.edu.vn".equals(organization)){
             credentialService.findByEmail(email)
