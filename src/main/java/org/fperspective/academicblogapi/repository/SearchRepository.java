@@ -90,4 +90,8 @@ public interface SearchRepository {
     List<String> findMostLikedCommentByBlog(String blogId);
 
     List<String> sortLatestComment(String blogId);
+
+    //Follow method
+
+    Integer findFollowerCount(String userId);
 }

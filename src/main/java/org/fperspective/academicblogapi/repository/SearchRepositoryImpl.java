@@ -1677,4 +1677,25 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                 return comments;
         }
+
+        /*
+         * FOLLOW METHOD
+         */
+
+        @Override
+        public Integer findFollowerCount(String userId) {
+
+                List<String> followers = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Follow");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$unwind",
+                                new Document("path", "$followedUser")
+                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$match",
+                                                new Document("followedUser", userId))));
+                result.forEach((doc) -> followers.add(converter.read(String.class, doc)));
+                return followers.size();
+        }
+
 }
