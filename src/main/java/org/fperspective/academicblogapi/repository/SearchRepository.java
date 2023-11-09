@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
+import org.fperspective.academicblogapi.model.Comment;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.model.Subject;
 import org.springframework.stereotype.Repository;
@@ -84,4 +85,9 @@ public interface SearchRepository {
 
     List<Subject> findSubjectByName(String text);
 
+    //Comment method
+
+    List<String> findMostLikedCommentByBlog(String blogId);
+
+    List<String> sortLatestComment(String blogId);
 }

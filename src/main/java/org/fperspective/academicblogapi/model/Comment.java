@@ -4,43 +4,34 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.mongodb.lang.NonNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-
-@Document("Blog")
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Data
-public class Blog {
+@Document("Comment")
+public class Comment {
+    
     @Id
-    private String blogId;
+    private String commentId;
 
-    private String blogTitle;
+    private String commentContent;
 
-    private String blogContent;
-
+    @NonNull
     private String userId;
+
+    private Date uploadDate;
+
+    @NonNull
+    private String blogId;
 
     private String[] like;
 
-    private Category category;
-
-    private Subject[] subject;
-
-    private BTag[] btag;
-
     @NonNull
     private boolean status;
-
-    @NonNull
-    private boolean deleted;
-
-    private Date uploadDate;
-    
 }

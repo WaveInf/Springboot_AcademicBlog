@@ -64,7 +64,6 @@ public class CredentialServiceImpl implements CredentialService {
         Credential existingUser = credentialRepository.findById(user.getUserID()).get();
         existingUser.setAvatarUrl(user.getAvatarUrl());
         existingUser.setBio(user.getBio());
-        existingUser.setCategory(user.getCategory());
         existingUser.setUsername(user.getUsername());
         return credentialRepository.save(existingUser);
     }

@@ -297,7 +297,6 @@ public class BlogController {
     public Blog save(@RequestBody Blog blog){
         blog.setStatus(false);
         blog.setDeleted(false);
-        blog.setCommentId(new String[0]);
         blog.setLike(new String[0]);
         return blogService.save(blog);
     }
@@ -306,6 +305,12 @@ public class BlogController {
     @CrossOrigin
     public Blog update(@RequestBody Blog blog){
         return blogService.update(blog);
+    }
+
+    @PostMapping("/like")
+    @CrossOrigin
+    public Blog like(@RequestBody Blog blog){
+        return blogService.like(blog);
     }
     
 }

@@ -14,7 +14,7 @@ public interface CredentialService {
 
     List<Credential> findRecommendedUser(String search, String currentUser);
 
-    public List<String> test(String search);
+    List<String> test(String search);
 
     void save(Credential credential);
 
@@ -28,10 +28,10 @@ public interface CredentialService {
 
     Credential searchByEmail(String email);
 
-    public Credential update(Credential user);
+    Credential update(Credential user);
 
-    public Credential remove(String userId);
+    Credential remove(String userId);
 
-    public Credential saveUser(Credential user);
+    Credential saveUser(Credential user);
     
 }

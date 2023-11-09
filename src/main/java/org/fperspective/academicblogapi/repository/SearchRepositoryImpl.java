@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Arrays;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
+import org.fperspective.academicblogapi.model.Comment;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1266,7 +1267,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                         result = collection.aggregate(Arrays.asList(new Document("$match",
                                         new Document("status", true)
                                                         .append("userId",
-                                                                        new Document("$ne",currentUser))),
+                                                                        new Document("$ne", currentUser))),
                                         new Document("$sortByCount", "$userId"),
                                         new Document("$unset", "count"),
                                         new Document("$limit", 3L)));
@@ -1285,7 +1286,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                         new Document("$match",
                                                         new Document("status", true)
                                                                         .append("userId",
-                                                                                        new Document("$ne",currentUser))),
+                                                                                        new Document("$ne",
+                                                                                                        currentUser))),
                                         new Document("$sortByCount", "$userId"),
                                         new Document("$unset", "count"),
                                         new Document("$limit", 3L)));
@@ -1595,4 +1597,84 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return subjects;
         }
 
+        /*
+         * COMMENT METHOD
+         */
+
+        @Override
+        public List<String> findMostLikedCommentByBlog(String blogId) {
+
+                List<String> comments = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Comment");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("blogId", blogId)),
+                                new Document("$unwind",
+                                                new Document("path", "$like")
+                                                                .append("preserveNullAndEmptyArrays", true)),
+                                new Document("$sortByCount", "$_id"),
+                                new Document("$unset", "count")));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                comments.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return comments;
+        }
+
+        @Override
+        public List<String> sortLatestComment(String blogId) {
+
+                List<String> comments = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Comment");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                                new Document("status", true)
+                                                .append("blogId", blogId)),
+                                new Document("$sort",
+                                                new Document("uploadDate", -1L))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                comments.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return comments;
+        }
 }
