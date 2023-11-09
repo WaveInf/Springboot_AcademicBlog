@@ -45,7 +45,8 @@ public class SubjectService {
     }
 
     public List<Subject> search(String text){
-        List<Subject> subjects = searchRepository.findSubjectByName(text);
+        String textUpperCase = text.toUpperCase();
+        List<Subject> subjects = searchRepository.findSubjectByName(textUpperCase);
         return subjects;
     }
 
