@@ -1256,7 +1256,7 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<String> findRecommendedUser(String search) {
+        public List<String> findRecommendedUser(String search, String currentUser) {
                 final List<String> users = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
@@ -1264,7 +1264,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                 AggregateIterable<Document> result;
                 if ("all".equals(search)) {
                         result = collection.aggregate(Arrays.asList(new Document("$match",
-                                        new Document("status", true)),
+                                        new Document("status", true)
+                                                        .append("userId",
+                                                                        new Document("$ne",currentUser))),
                                         new Document("$sortByCount", "$userId"),
                                         new Document("$unset", "count"),
                                         new Document("$limit", 3L)));
@@ -1281,7 +1283,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                         "btag.tagName",
                                                                                                                                         "category.categoryName")))),
                                         new Document("$match",
-                                                        new Document("status", true)),
+                                                        new Document("status", true)
+                                                                        .append("userId",
+                                                                                        new Document("$ne",currentUser))),
                                         new Document("$sortByCount", "$userId"),
                                         new Document("$unset", "count"),
                                         new Document("$limit", 3L)));
@@ -1311,11 +1315,9 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return users;
         }
 
-
         /*
          * TAG METHOD
          */
-
 
         @Override
         // Query to find most used tags and its used count
@@ -1459,13 +1461,11 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return tags;
         }
 
-
         /*
          * SUBJECT METHOD
          */
 
-
-         @Override
+        @Override
         // Query to find most used tags and its used count
         public List<String> findMostUsedSubject(String limit) {
 
@@ -1588,12 +1588,11 @@ public class SearchRepositoryImpl implements SearchRepository {
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
                                 new Document("$match",
                                                 new Document("status", true)
-                                                .append("subjectName", text))));
+                                                                .append("subjectName", text))));
 
                 result.forEach((doc) -> subjects.add(converter.read(Subject.class, doc)));
 
                 return subjects;
         }
-
 
 }

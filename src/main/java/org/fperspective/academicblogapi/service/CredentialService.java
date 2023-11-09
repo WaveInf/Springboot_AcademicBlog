@@ -12,7 +12,7 @@ public interface CredentialService {
 
     Optional<Credential> findByEmail(String email);
 
-    List<Credential> findRecommendedUser(String search);
+    List<Credential> findRecommendedUser(String search, String currentUser);
 
     public List<String> test(String search);
 
@@ -27,7 +27,6 @@ public interface CredentialService {
     List<Credential> searchByCampus(String campus);
 
     Credential searchByEmail(String email);
-
 
     public Credential update(Credential user);
 

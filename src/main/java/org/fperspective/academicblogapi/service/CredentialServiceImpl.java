@@ -80,8 +80,8 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     @Override
-    public List<Credential> findRecommendedUser(String search) {
-        List<String> users = searchRepository.findRecommendedUser(search);
+    public List<Credential> findRecommendedUser(String search, String currentUser) {
+        List<String> users = searchRepository.findRecommendedUser(search, currentUser);
         List<Credential> userList = new ArrayList<>();
         users.forEach((user) -> userList.add(credentialRepository.findById(user).get()));
         return userList;
@@ -89,7 +89,8 @@ public class CredentialServiceImpl implements CredentialService {
 
     @Override
     public List<String> test(String search) {
-        List<String> users = searchRepository.findRecommendedUser(search);
-        return users;
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'test'");
     }
+
 }

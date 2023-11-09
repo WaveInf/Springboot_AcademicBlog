@@ -63,7 +63,7 @@ public interface SearchRepository {
 
     Credential searchUserByEmail(String email);
 
-    List<String> findRecommendedUser(String search);
+    List<String> findRecommendedUser(String search, String currentUser);
 
     //Tag method
     List<String> findMostUsedTag(String limit);
