@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fperspective.academicblogapi.model.Comment;
-import org.fperspective.academicblogapi.model.Comment;
-import org.fperspective.academicblogapi.service.CategoryService;
 import org.fperspective.academicblogapi.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

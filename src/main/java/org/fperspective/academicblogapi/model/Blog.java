@@ -29,8 +29,6 @@ public class Blog {
 
     private String[] like;
 
-    private Category category;
-
     private Subject[] subject;
 
     private BTag[] btag;

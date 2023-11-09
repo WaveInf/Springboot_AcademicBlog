@@ -298,6 +298,9 @@ public class BlogController {
         blog.setStatus(false);
         blog.setDeleted(false);
         blog.setLike(new String[0]);
+        if(blog.getSubject() == null){
+            blog.setSubject(null);
+        }
         return blogService.save(blog);
     }
 

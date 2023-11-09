@@ -1,6 +1,5 @@
 package org.fperspective.academicblogapi.service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +53,6 @@ public class BlogService {
         existingBlog.setBlogContent(blog.getBlogContent());
         existingBlog.setBtag(blog.getBtag());
         existingBlog.setSubject(blog.getSubject());
-        existingBlog.setCategory(blog.getCategory());
         return blogRepository.save(existingBlog);
     }
 
