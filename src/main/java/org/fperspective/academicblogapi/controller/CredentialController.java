@@ -65,6 +65,8 @@ public class CredentialController {
     @PostMapping("/update")
     @CrossOrigin
     public Credential update(@RequestBody Credential credential){
+        credential.setAttributes(null);
+        credential.setAuthorities(null);
         return credentialService.update(credential);
     }
 
