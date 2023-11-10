@@ -278,6 +278,36 @@ public class BlogController {
         return blogs;
     }
 
+    @GetMapping("/index/{tagName}/{blogId}")
+    @CrossOrigin
+    public Integer findUnapprovedBlogs(@PathVariable("tagName") String tagName, @PathVariable("blogId") String blogId) {
+        Integer blogs = blogService.getIndex(tagName, blogId);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @DeleteMapping("/user/{userId}")
+    // @PreAuthorize("hasRole('ADMIN')")
+    @CrossOrigin
+    public void deleteAllBlogByUser(@PathVariable String userId) {
+        blogService.deleteAllBlogByUser(userId);
+    }
+
+    @DeleteMapping("/tag/{tagName}")
+    // @PreAuthorize("hasRole('ADMIN')")
+    @CrossOrigin
+    public void deleteBlogByTag(@PathVariable String tagName) {
+        blogService.deleteTagInBlog(tagName);
+    }
+
+    @DeleteMapping("/subject/{subjectName}")
+    // @PreAuthorize("hasRole('ADMIN')")
+    @CrossOrigin
+    public void deleteBlogBySubject(@PathVariable String subjectName) {
+        blogService.deleteSubjectInBlog(subjectName);
+    }
+
     @DeleteMapping("/delete/{blogId}")
     // @PreAuthorize("hasRole('ADMIN')")
     @CrossOrigin

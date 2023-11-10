@@ -23,6 +23,8 @@ public interface SearchRepository {
 
     List<Blog> searchBlogByUser(String userId, String time);
 
+    List<Blog> searchAllBlogByUser(String userId);
+
     List<String> findMostLikedBlogByText(String text);
 
     List<String> findMostLikedBlogByCategory(String category);
@@ -57,6 +59,14 @@ public interface SearchRepository {
 
     List<Blog> findUnapprovedBlogs(String operator);
 
+    List<String> findBlogContainTag(String tagName);
+
+    Integer getIndexTagByBlog(String tagName, String blogId);
+
+    List<String> findBlogContainSubject(String subjectName);
+
+    Integer getIndexSubjectByBlog(String subjectName, String blogId);
+
     //User method
     List<Credential> searchUserByText(String text);
 
@@ -73,7 +83,10 @@ public interface SearchRepository {
 
     List<String> findTagByBlog(String blogId);
 
-    List<BTag> findTagByName(String text);
+    BTag findTagByName(String text);
+
+    List<BTag> findTagListByName(String text);
+
 
     //Subject method
 
@@ -83,7 +96,9 @@ public interface SearchRepository {
 
     List<String> findSubjectByBlog(String blogId);
 
-    List<Subject> findSubjectByName(String text);
+    Subject findSubjectByName(String text);
+
+    List<Subject> findSubjectListByName(String text);
 
     //Comment method
 

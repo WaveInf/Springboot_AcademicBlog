@@ -208,6 +208,23 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
+        public List<Blog> searchAllBlogByUser(String userId) {
+
+                final List<Blog> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("userId",
+                                                                userId))));
+
+                result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
+
+                return blogs;
+        }
+
+        @Override
         public List<String> findMostLikedBlogByText(String text) {
 
                 final List<String> blogs = new ArrayList<>();
@@ -1183,6 +1200,213 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return blogs;
         }
 
+        @Override
+        public List<String> findBlogContainTag(String tagName) {
+
+                List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                                new Document("query", tagName)
+                                                                                .append("path", "btag.tagName"))),
+                                new Document("$match",
+                                                new Document("deleted", false)),
+                                new Document("$unwind",
+                                                new Document("path", "$btag")
+                                                                .append("includeArrayIndex", "index")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$match",
+                                                new Document("btag.tagName", tagName)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("index", "$index"))),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public Integer getIndexTagByBlog(String tagName, String blogId) {
+
+                List<String> test = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                                new Document("query", tagName)
+                                                                                .append("path", "btag.tagName"))),
+                                new Document("$match",
+                                                new Document("deleted", false)
+                                                                .append("_id",
+                                                                                new ObjectId(blogId))),
+                                new Document("$unwind",
+                                                new Document("path", "$btag")
+                                                                .append("includeArrayIndex", "index")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$match",
+                                                new Document("btag.tagName", tagName)),
+                                new Document("$project",
+                                                new Document("_id", "$_id")
+                                                                .append("index", "$index")),
+                                new Document("$unset", "_id")));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("index")
+                                                // .get("$oid")
+                                                .asText();
+                                test.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+                // Integer index = count.get(0);
+
+                return Integer.parseInt(test.get(0));
+        }
+
+        @Override
+        public List<String> findBlogContainSubject(String subjectName) {
+
+                List<String> blogs = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                                new Document("query", subjectName)
+                                                                                .append("path", "subject.subjectName"))),
+                                new Document("$match",
+                                                new Document("deleted", false)),
+                                new Document("$unwind",
+                                                new Document("path", "$subject")
+                                                                .append("includeArrayIndex", "index")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$match",
+                                                new Document("subject.subjectName", subjectName)),
+                                new Document("$group",
+                                                new Document("_id",
+                                                                new Document("blogId", "$_id")
+                                                                                .append("index", "$index"))),
+                                new Document("$project",
+                                                new Document("_id", "$_id.blogId"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                blogs.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return blogs;
+        }
+
+        @Override
+        public Integer getIndexSubjectByBlog(String subjectName, String blogId) {
+
+                List<String> test = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "blog")
+                                                .append("text",
+                                                                new Document("query", subjectName)
+                                                                                .append("path", "subject.subjectName"))),
+                                new Document("$match",
+                                                new Document("deleted", false)
+                                                                .append("_id",
+                                                                                new ObjectId(blogId))),
+                                new Document("$unwind",
+                                                new Document("path", "$subject")
+                                                                .append("includeArrayIndex", "index")
+                                                                .append("preserveNullAndEmptyArrays", false)),
+                                new Document("$match",
+                                                new Document("subject.subjectName", subjectName)),
+                                new Document("$project",
+                                                new Document("_id", "$_id")
+                                                                .append("index", "$index")),
+                                new Document("$unset", "_id")));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("index")
+                                                // .get("$oid")
+                                                .asText();
+                                test.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+                // Integer index = count.get(0);
+
+                return Integer.parseInt(test.get(0));
+        }
+
+
         /*
          * USER METHOD
          */
@@ -1339,6 +1563,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                         new Document("path", "$btag").append(
                                                                         "preserveNullAndEmptyArrays",
                                                                         false)),
+                                        new Document("$match",
+                                                        new Document("btag.status", true)),
                                         new Document("$sortByCount", "$btag._id")));
                 } else {
                         Long limitLong = Long.parseLong(limit);
@@ -1350,6 +1576,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                         new Document("path", "$btag").append(
                                                                         "preserveNullAndEmptyArrays",
                                                                         false)),
+                                        new Document("$match",
+                                                        new Document("btag.status", true)),
                                         new Document("$sortByCount", "$btag._id"),
                                         new Document("$limit", limitLong)));
                 }
@@ -1436,7 +1664,24 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<BTag> findTagByName(String text) {
+        public BTag findTagByName(String text) {
+                final List<BTag> tags = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("BTag");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("tagName", text))));
+
+                result.forEach((doc) -> tags.add(converter.read(BTag.class, doc)));
+
+                final BTag test = tags.get(0);
+
+                return test;
+        }
+
+        @Override
+        public List<BTag> findTagListByName(String text) {
                 final List<BTag> tags = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
@@ -1456,7 +1701,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                                 4L)))),
 
                                 new Document("$match",
-                                                new Document("status", true))));
+                                                new Document("status", true))
+                                                ));
 
                 result.forEach((doc) -> tags.add(converter.read(BTag.class, doc)));
 
@@ -1582,7 +1828,22 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<Subject> findSubjectByName(String text) {
+        public Subject findSubjectByName(String text) {
+                final List<Subject> subjects = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Subject");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("subjectName", text))));
+
+                result.forEach((doc) -> subjects.add(converter.read(Subject.class, doc)));
+
+                return subjects.get(0);
+        }
+
+        @Override
+        public List<Subject> findSubjectListByName(String text) {
                 final List<Subject> subjects = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");

@@ -93,6 +93,16 @@ public class TagController {
         return tags;
     }
 
+    @GetMapping("/search/one/{text}")
+    @CrossOrigin
+    //Show most popular tags and its used count as Hashmap
+    public BTag findTagOneByName(@PathVariable String text) {
+        BTag tags = tagService.searchOne(text);
+        if (tags == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return tags;
+    }
+
     @GetMapping("/count/{tagName}")
     @CrossOrigin
     //Show most popular tags and its used count as Hashmap

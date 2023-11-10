@@ -51,7 +51,7 @@ public class FollowController {
         return followService.get();
     }
 
-    @GetMapping("/show/{userId}")
+    @GetMapping("/show/user/{userId}")
     @CrossOrigin
     public Follow get(@PathVariable String userId) {
         Follow follow = followService.get(userId);
@@ -60,7 +60,7 @@ public class FollowController {
         return follow;
     }
 
-    @GetMapping("/show/{count}")
+    @GetMapping("/show/count/{userId}")
     @CrossOrigin
     public Integer findFollowerCount(@PathVariable String userId) {
         Integer follow = followService.findFollowerCount(userId);

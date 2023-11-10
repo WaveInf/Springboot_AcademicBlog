@@ -45,7 +45,12 @@ public class TagService {
     }
 
     public List<BTag> search(String text){
-        List<BTag> tags = searchRepository.findTagByName(text);
+        List<BTag> tags = searchRepository.findTagListByName(text);
+        return tags;
+    }
+
+    public BTag searchOne(String text){
+        BTag tags = searchRepository.findTagByName(text);
         return tags;
     }
 
