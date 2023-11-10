@@ -2,14 +2,12 @@ package org.fperspective.academicblogapi.configuration;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bson.types.ObjectId;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.model.LoginProvider;
 import org.fperspective.academicblogapi.model.Role;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -35,6 +32,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     
     @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
+
+    private String[] adminList = {"annpse172989@fpt.edu.vn"};
 
     @Autowired
     @Lazy
@@ -75,7 +74,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 	        // Date date = new Date();
             // System.out.println(formatter.format(date));
             // Collection<? extends GrantedAuthority> authority = authentication.getAuthorities();
-
+            
             if("fpt.edu.vn".equals(organization) || "fe.edu.vn".equals(organization)){
             credentialService.findByEmail(email)
                              .ifPresentOrElse(user -> {
@@ -83,8 +82,16 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                                 Authentication securityAuth = new OAuth2AuthenticationToken(newUser, List.of(new SimpleGrantedAuthority(user.getRole().name())), oAuth2AuthenticationToken.getAuthorizedClientRegistrationId());
                                 SecurityContextHolder.getContext().setAuthentication(securityAuth);
                              }, () -> {
+                                
                                 Credential credential = new Credential();
-                                if("fpt.edu.vn".equals(organization) && !"annpse172989@fpt.edu.vn".equals(email)){
+                                Boolean check = false;
+                                for (String element : adminList) {
+                                    if (element.equals(email)) {
+                                        check = true;
+                                        break; // No need to continue searching once found
+                                    }
+                                }
+                                if("fpt.edu.vn".equals(organization) && check.equals(false)){
                                     credential.setRole(Role.ROLE_USER);
                                 }
                                 else if("fe.edu.vn".equals(organization)){

@@ -2,6 +2,7 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.fperspective.academicblogapi.model.Follow;
 import org.fperspective.academicblogapi.service.FollowService;
@@ -62,8 +63,8 @@ public class FollowController {
 
     @GetMapping("/show/count/{userId}")
     @CrossOrigin
-    public Integer findFollowerCount(@PathVariable String userId) {
-        Integer follow = followService.findFollowerCount(userId);
+    public List<String> findFollowerCount(@PathVariable String userId) {
+        List<String> follow = followService.findFollowerCount(userId);
         if (follow == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return follow;

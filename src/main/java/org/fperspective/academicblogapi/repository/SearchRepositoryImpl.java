@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Arrays;
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
-import org.fperspective.academicblogapi.model.Comment;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1424,7 +1423,14 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("index", "credential")
                                                                 .append("text",
                                                                                 new Document("query", text)
-                                                                                                .append("path", "username"))),
+                                                                                                .append("path", Arrays
+                                                                                                                .asList("userrname",
+                                                                                                                                "fullname"))
+                                                                                                .append("fuzzy",
+                                                                                                                new Document("maxEdits",
+                                                                                                                                1L)
+                                                                                                                                .append("prefixLength",
+                                                                                                                                                4L)))),
                                 new Document("$match",
                                                 new Document("status", true)),
                                 new Document("$sort",
@@ -1946,7 +1952,7 @@ public class SearchRepositoryImpl implements SearchRepository {
          */
 
         @Override
-        public Integer findFollowerCount(String userId) {
+        public List<String> findFollowerCount(String userId) {
 
                 List<String> followers = new ArrayList<>();
 
@@ -1954,11 +1960,32 @@ public class SearchRepositoryImpl implements SearchRepository {
                 MongoCollection<Document> collection = database.getCollection("Follow");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$unwind",
                                 new Document("path", "$followedUser")
-                                                .append("preserveNullAndEmptyArrays", true)),
+                                                .append("preserveNullAndEmptyArrays", false)),
                                 new Document("$match",
-                                                new Document("followedUser", userId))));
-                result.forEach((doc) -> followers.add(converter.read(String.class, doc)));
-                return followers.size();
+                                                new Document("followedUser", userId)),
+                                new Document("$unset", Arrays.asList("_class", "followedUser"))));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                followers.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });                
+                return followers;
         }
 
 }

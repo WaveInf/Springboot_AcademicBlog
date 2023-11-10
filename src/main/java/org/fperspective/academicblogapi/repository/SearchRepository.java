@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
-import org.fperspective.academicblogapi.model.Comment;
 import org.fperspective.academicblogapi.model.Credential;
 import org.fperspective.academicblogapi.model.Subject;
 import org.springframework.stereotype.Repository;
@@ -108,5 +107,5 @@ public interface SearchRepository {
 
     //Follow method
 
-    Integer findFollowerCount(String userId);
+    List<String> findFollowerCount(String userId);
 }

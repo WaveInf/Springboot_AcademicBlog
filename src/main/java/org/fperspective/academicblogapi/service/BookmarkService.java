@@ -2,7 +2,7 @@ package org.fperspective.academicblogapi.service;
 
 import java.util.Collection;
 
-import org.fperspective.academicblogapi.controller.BookmarkController;
+import org.bson.types.ObjectId;
 import org.fperspective.academicblogapi.model.Bookmark;
 import org.fperspective.academicblogapi.repository.BookmarkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,7 @@ public class BookmarkService {
     }
 
     public Bookmark get(String userId) {
+        checkExist(userId);
         return bookmarkRepository.findById(userId).orElse(null);
     }
 
@@ -31,9 +32,17 @@ public class BookmarkService {
     }
 
     public Bookmark update(Bookmark bookmark) {
+        checkExist(bookmark.getUserId());
         Bookmark existingBookmark = bookmarkRepository.findById(bookmark.getUserId()).get();
         existingBookmark.setBookmarkedPost(bookmark.getBookmarkedPost());
         return bookmarkRepository.save(existingBookmark);
     }
     
+    public void checkExist(String userId){
+        Bookmark check = bookmarkRepository.findById(userId).orElse(null);
+        if(check == null){
+            check = new Bookmark(new ObjectId(userId), new String[0]);
+            bookmarkRepository.save(check);
+        }
+    }
 }

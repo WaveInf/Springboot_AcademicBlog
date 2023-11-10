@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Comment;
 import org.fperspective.academicblogapi.repository.CommentRepository;
 import org.fperspective.academicblogapi.repository.SearchRepository;
