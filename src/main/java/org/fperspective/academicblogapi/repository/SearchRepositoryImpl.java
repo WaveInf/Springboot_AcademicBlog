@@ -1406,7 +1406,6 @@ public class SearchRepositoryImpl implements SearchRepository {
                 return Integer.parseInt(test.get(0));
         }
 
-
         /*
          * USER METHOD
          */
@@ -1701,8 +1700,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                                                                                 4L)))),
 
                                 new Document("$match",
-                                                new Document("status", true))
-                                                ));
+                                                new Document("status", true))));
 
                 result.forEach((doc) -> tags.add(converter.read(BTag.class, doc)));
 
@@ -1731,6 +1729,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                         new Document("path", "$subject").append(
                                                                         "preserveNullAndEmptyArrays",
                                                                         false)),
+                                        new Document("$match",
+                                                        new Document("subject.status", true)),
                                         new Document("$sortByCount", "$subject._id")));
                 } else {
                         Long limitLong = Long.parseLong(limit);
@@ -1742,6 +1742,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                         new Document("path", "$subject").append(
                                                                         "preserveNullAndEmptyArrays",
                                                                         false)),
+                                        new Document("$match",
+                                                        new Document("subject.status", true)),
                                         new Document("$sortByCount", "$subject._id"),
                                         new Document("$limit", limitLong)));
                 }
