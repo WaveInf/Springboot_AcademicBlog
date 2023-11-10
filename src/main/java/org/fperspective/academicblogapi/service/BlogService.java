@@ -60,7 +60,17 @@ public class BlogService {
 
     public Blog like(Blog blog) {
         Blog existingBlog = blogRepository.findById(blog.getBlogId()).get();
-        existingBlog.setLike(blog.getLike());
+        String[] newlike = blog.getLike();
+        String[] existingLike = existingBlog.getLike();
+        Boolean check = true;
+        for(String like : existingLike){
+            if(like.equals(newlike[0])){
+                check = false;
+            }
+        }
+        if(check == true){
+            existingBlog.setLike(blog.getLike());
+        }
         return blogRepository.save(existingBlog);
     }
 
