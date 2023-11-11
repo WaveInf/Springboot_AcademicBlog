@@ -34,6 +34,23 @@ public class BookmarkService {
     public Bookmark update(Bookmark bookmark) {
         checkExist(bookmark.getUserId());
         Bookmark existingBookmark = bookmarkRepository.findById(bookmark.getUserId()).get();
+        String[] newPost = bookmark.getBookmarkedPost();
+        Integer count = newPost.length - 1;
+        String[] existingPost = existingBookmark.getBookmarkedPost();
+        Boolean check = true;
+        for(String post : existingPost){
+            if(post.equals(newPost[count])){
+                check = false;
+            }
+        }
+        if(check == true){
+            existingBookmark.setBookmarkedPost(bookmark.getBookmarkedPost());
+        }
+        return bookmarkRepository.save(existingBookmark);
+    }
+
+    public Bookmark unUpdate(Bookmark bookmark){
+        Bookmark existingBookmark = bookmarkRepository.findById(bookmark.getUserId()).get();
         existingBookmark.setBookmarkedPost(bookmark.getBookmarkedPost());
         return bookmarkRepository.save(existingBookmark);
     }

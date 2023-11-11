@@ -74,11 +74,19 @@ public class BookmarkController {
         return bookmarkService.save(bookmark);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/bookmark")
     @CrossOrigin
     public Bookmark update(@RequestBody Bookmark bookmark){
         String userId = bookmark.getUserId();
         bookmark.setUserId(userId);
         return bookmarkService.update(bookmark);
+    }
+
+    @PostMapping("/unbookmark")
+    @CrossOrigin
+    public Bookmark unUpdate(@RequestBody Bookmark bookmark){
+        String userId = bookmark.getUserId();
+        bookmark.setUserId(userId);
+        return bookmarkService.unUpdate(bookmark);
     }
 }

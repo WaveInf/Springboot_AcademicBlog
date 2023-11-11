@@ -58,20 +58,28 @@ public class BlogService {
         return blogRepository.save(existingBlog);
     }
 
-    public Blog like(Blog blog) {
+    public void like(Blog blog) {
         Blog existingBlog = blogRepository.findById(blog.getBlogId()).get();
         String[] newlike = blog.getLike();
+        Integer count = newlike.length - 1;
         String[] existingLike = existingBlog.getLike();
         Boolean check = true;
         for(String like : existingLike){
-            if(like.equals(newlike[0])){
+            if(like.equals(newlike[count])){
                 check = false;
             }
+
         }
         if(check == true){
             existingBlog.setLike(blog.getLike());
         }
-        return blogRepository.save(existingBlog);
+        blogRepository.save(existingBlog);
+    }
+
+    public void unlike(Blog blog){
+        Blog existingBlog = blogRepository.findById(blog.getBlogId()).get();
+        existingBlog.setLike(blog.getLike());
+        blogRepository.save(existingBlog);
     }
 
     public List<Blog> searchByText(String text, String operator) {

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fperspective.academicblogapi.model.Comment;
+import org.fperspective.academicblogapi.model.Comment;
 import org.fperspective.academicblogapi.repository.CommentRepository;
 import org.fperspective.academicblogapi.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,24 @@ public class CommentService {
     }
 
     public Comment like(Comment comment) {
-         Comment existingComment = commentRepository.findById(comment.getCommentId()).get();
+        Comment existingComment = commentRepository.findById(comment.getCommentId()).get();
+        String[] newlike = comment.getLike();
+        Integer count = newlike.length - 1;
+        String[] existingLike = existingComment.getLike();
+        Boolean check = true;
+        for(String like : existingLike){
+            if(like.equals(newlike[count])){
+                check = false;
+            }
+        }
+        if(check == true){
+            existingComment.setLike(comment.getLike());
+        }
+        return commentRepository.save(existingComment);
+    }
+
+    public Comment unlike(Comment comment) {
+        Comment existingComment = commentRepository.findById(comment.getCommentId()).get();
         existingComment.setLike(comment.getLike());
         return commentRepository.save(existingComment);
     }

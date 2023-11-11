@@ -97,11 +97,18 @@ public class CommentController {
     public Comment update(@RequestBody Comment comment){
         return commentService.update(comment);
     }
+    
 
     @PostMapping("/like")
     @CrossOrigin
     public Comment like(@RequestBody Comment comment){
         return commentService.like(comment);
+    }
+
+    @PostMapping("/unlike")
+    @CrossOrigin
+    public Comment unlike(@RequestBody Comment comment){
+        return commentService.unlike(comment);
     }
     
 }

@@ -342,8 +342,14 @@ public class BlogController {
 
     @PostMapping("/like")
     @CrossOrigin
-    public Blog like(@RequestBody Blog blog){
-        return blogService.like(blog);
+    public void like(@RequestBody Blog blog){
+        blogService.like(blog);
+    }
+
+    @PostMapping("/unlike")
+    @CrossOrigin
+    public void unlike(@RequestBody Blog blog){
+        blogService.unlike(blog);
     }
     
 }
