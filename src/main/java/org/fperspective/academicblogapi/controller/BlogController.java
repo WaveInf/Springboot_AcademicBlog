@@ -178,6 +178,15 @@ public class BlogController {
         return blogs;
     }
 
+    @GetMapping("/sort/oldest")
+    @CrossOrigin
+    public List<Blog> sortOldest() {
+        List<Blog> blogs = blogService.sortOldest();
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
     @GetMapping("/sort/all")
     @CrossOrigin
     //sort all blog by like
@@ -264,6 +273,15 @@ public class BlogController {
     @CrossOrigin
     public List<Blog> sortWeekBySubject(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week, @PathVariable("subjectName") String subjectName) {
         List<Blog> blogs = blogService.sortWeekBySubject(year, month, week, subjectName);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
+    @GetMapping("/sort/date/range/{startYear}/{endYear}/{startMonth}/{endMonth}/{startDate}/{endDate}")
+    @CrossOrigin
+    public List<Blog> sortBlogByDateRange(@PathVariable("startYear") String startYear, @PathVariable("endYear") String endYear, @PathVariable("startMonth") String startMonth, @PathVariable("endMonth") String endMonth, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
+        List<Blog> blogs = blogService.sortByDateRange(startYear, endYear, startMonth, endMonth, startDate, endDate);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

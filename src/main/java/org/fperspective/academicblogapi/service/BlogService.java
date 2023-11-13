@@ -138,7 +138,11 @@ public class BlogService {
     }
 
     public List<Blog> sortLatest() {
-        return searchRepository.sortLatestBlog();
+        return searchRepository.sortLatestBlog("-1");
+    }
+
+    public List<Blog> sortOldest() {
+        return searchRepository.sortLatestBlog("1");
     }
 
     public List<Blog> sortAll() {
@@ -206,6 +210,13 @@ public class BlogService {
 
     public List<Blog> sortWeekBySubject(String year, String month, String week, String subject) {
         List<String> blogs = searchRepository.sortBlogByWeekAndSubject(year, month, week, subject);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
+    public List<Blog> sortByDateRange(String startYear, String endYear, String startMonth, String endMonth, String startDate, String endDate){
+        List<String> blogs = searchRepository.sortBlogByDateRange(startYear, endYear, startMonth, endMonth, startDate, endDate);
         List<Blog> blogList = new ArrayList<>();
         blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
         return blogList;

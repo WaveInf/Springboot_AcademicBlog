@@ -34,7 +34,7 @@ public interface SearchRepository {
 
     List<String> findMostLikedBlogByUser(String userId);
 
-    List<Blog> sortLatestBlog();
+    List<Blog> sortLatestBlog(String time);
 
     List<String> sortBlogAll();
 
