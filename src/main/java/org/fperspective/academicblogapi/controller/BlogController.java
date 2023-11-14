@@ -1,6 +1,7 @@
 package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 
@@ -278,10 +279,10 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/date/range/{startYear}/{endYear}/{startMonth}/{endMonth}/{startDate}/{endDate}")
+    @GetMapping("/sort/date/range/{startDate}/{endDate}")
     @CrossOrigin
-    public List<Blog> sortBlogByDateRange(@PathVariable("startYear") String startYear, @PathVariable("endYear") String endYear, @PathVariable("startMonth") String startMonth, @PathVariable("endMonth") String endMonth, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
-        List<Blog> blogs = blogService.sortByDateRange(startYear, endYear, startMonth, endMonth, startDate, endDate);
+    public List<Blog> sortBlogByDateRange(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) throws ParseException {
+        List<Blog> blogs = blogService.sortByDateRange(startDate, endDate);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

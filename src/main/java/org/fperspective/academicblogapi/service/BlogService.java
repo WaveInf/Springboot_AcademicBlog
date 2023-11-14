@@ -1,5 +1,6 @@
 package org.fperspective.academicblogapi.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -215,11 +216,8 @@ public class BlogService {
         return blogList;
     }
 
-    public List<Blog> sortByDateRange(String startYear, String endYear, String startMonth, String endMonth, String startDate, String endDate){
-        List<String> blogs = searchRepository.sortBlogByDateRange(startYear, endYear, startMonth, endMonth, startDate, endDate);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
+    public List<Blog> sortByDateRange(String startDate, String endDate) throws ParseException{
+        return searchRepository.sortBlogByDateRange(startDate, endDate);
     }
 
     public void deleteTagInBlog(String tagName) {

@@ -1,8 +1,13 @@
 package org.fperspective.academicblogapi.repository;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Date;
+
 import org.fperspective.academicblogapi.model.BTag;
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Credential;
@@ -1172,83 +1177,32 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<String> sortBlogByDateRange(String startYear, String endYear, String startMonth, String endMonth, String startDate, String endDate) {
+        public List<Blog> sortBlogByDateRange(String startDate, String endDate) throws ParseException {
 
-                Long startYearLong = Long.parseLong(startYear);
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date start = formatter.parse(startDate);
 
-                Long endYearLong = Long.parseLong(endYear);
+                Long startLong = start.getTime();
 
-                Long startMonthLong = Long.parseLong(startMonth);
+                Date end = formatter.parse(endDate);
 
-                Long endMonthLong = Long.parseLong(endMonth);
+                Long endLong = end.getTime();
 
-                Long startDateLong = Long.parseLong(startDate);
-
-                Long endDateLong = Long.parseLong(endDate);
-
-                List<String> blogs = new ArrayList<>();
+                List<Blog> blogs = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Blog");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
                                 new Document("status", true)
-                                                .append("deleted", false)),
-                                new Document("$group",
-                                                new Document("_id",
-                                                                new Document("blogId", "$_id")
-                                                                                .append("year",
-                                                                                                new Document("$year",
-                                                                                                                "$uploadDate"))
-                                                                                .append("month",
-                                                                                                new Document("$month",
-                                                                                                                "$uploadDate"))
-                                                                                .append("week",
-                                                                                                new Document("$week",
-                                                                                                                "$uploadDate"))
-                                                                                .append("day",
-                                                                                                new Document("$dayOfMonth",
-                                                                                                                "$uploadDate"))
-                                                                                .append("numberOfLike",
-                                                                                                new Document("$cond",
-                                                                                                                new Document("if",
-                                                                                                                                new Document("$isArray",
-                                                                                                                                                "$like"))
-                                                                                                                                .append("then",
-                                                                                                                                                new Document("$size",
-                                                                                                                                                                "$like"))
-                                                                                                                                .append("else", "NA"))))),
-                                new Document("$match",
-                                                new Document("_id.year",
-                                                                new Document("$gte", startYearLong)
-                                                                                .append("$lte", endYearLong))
-                                                                .append("_id.month",
-                                                                                new Document("$gte", startMonthLong)
-                                                                                                .append("$lte", endMonthLong))
-                                                                .append("_id.day",
-                                                                                new Document("$gte", startDateLong)
-                                                                                                .append("$lte", endDateLong))),
-                                new Document("$project",
-                                                new Document("_id", "$_id.blogId"))));
+                                                .append("deleted", false)
+                                                .append("uploadDate",
+                                                                new Document("$gte",
+                                                                                start)
+                                                                                .append("$lte",
+                                                                                                end)))));
 
-                result.forEach((doc) -> {
-                        ObjectMapper objectMapper = new ObjectMapper();
-
-                        // Parse the JSON string
-                        JsonNode jsonNode;
-                        try {
-                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
-                                // Access the value associated with "$oid"
-                                String oidValue = jsonNode.get("_id").get("$oid").asText();
-                                blogs.add(oidValue);
-                        } catch (JsonMappingException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                        } catch (JsonProcessingException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                        }
-                });
-
+                result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));  
+                
                 return blogs;
         }
 

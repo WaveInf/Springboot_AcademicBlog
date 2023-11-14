@@ -1,5 +1,6 @@
 package org.fperspective.academicblogapi.repository;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.fperspective.academicblogapi.model.BTag;
@@ -55,6 +56,8 @@ public interface SearchRepository {
     List<String> sortBlogByMonthAndTag(String year, String month, String tag);
 
     List<String> sortBlogByWeekAndTag(String year, String month, String week, String tag);
+
+    List<Blog> sortBlogByDateRange(String startDate, String endDate) throws ParseException;
 
     List<Blog> findUnapprovedBlogs(String operator);
 
