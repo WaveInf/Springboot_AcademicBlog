@@ -120,6 +120,17 @@ public class BlogController {
         return blogs;
     }
 
+    @GetMapping("/search/like/{userId}")
+    @CrossOrigin
+    //time: 1 or -1, 1 for oldest, -1 for newest
+    //search by userId
+    public List<Blog> findAllLikedBlog(@PathVariable("userId") String userId) {
+        List<Blog> blogs = blogService.findAllLikedBlog(userId);
+        if (blogs == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return blogs;
+    }
+
     @GetMapping("/sort/text/{text}")
     @CrossOrigin
     //sort most popular blog by blogTitle
@@ -198,82 +209,19 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/blog/year/{year}")
+    @GetMapping("/sort/tag/month/{startDate}/{endDate}/{tagName}")
     @CrossOrigin
-    public List<Blog> sortYear(@PathVariable String year) {
-        List<Blog> blogs = blogService.sortYear(year);
+    public List<Blog> sortMonth(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate, @PathVariable("tagName") String tagName) throws ParseException {
+        List<Blog> blogs = blogService.sortDateByTag(startDate, endDate, tagName);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;
     }
 
-    @GetMapping("/sort/blog/month/{year}/{month}")
+    @GetMapping("/sort/subject/month/{startDate}/{endDate}/{subjectName}")
     @CrossOrigin
-    public List<Blog> sortMonth(@PathVariable("year") String year, @PathVariable("month") String month) {
-        List<Blog> blogs = blogService.sortMonth(year, month);
-        if (blogs == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blogs;
-    }
-
-    @GetMapping("/sort/blog/week/{year}/{month}/{week}")
-    @CrossOrigin
-    public List<Blog> sortWeek(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week) {
-        List<Blog> blogs = blogService.sortWeek(year, month, week);
-        if (blogs == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blogs;
-    }
-
-    @GetMapping("/sort/tag/year/{year}/{tagName}")
-    @CrossOrigin
-    public List<Blog> sortYearByTag(@PathVariable("year") String year, @PathVariable("tagName") String tagName) {
-        List<Blog> blogs = blogService.sortYearByTag(year, tagName);
-        if (blogs == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blogs;
-    }
-
-    @GetMapping("/sort/tag/month/{year}/{month}/{tagName}")
-    @CrossOrigin
-    public List<Blog> sortMonth(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("tagName") String tagName) {
-        List<Blog> blogs = blogService.sortMonthByTag(year, month, tagName);
-        if (blogs == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blogs;
-    }
-
-    @GetMapping("/sort/tag/week/{year}/{month}/{week}/{tagName}")
-    @CrossOrigin
-    public List<Blog> sortWeek(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week, @PathVariable("tagName") String tagName) {
-        List<Blog> blogs = blogService.sortWeekByTag(year, month, week, tagName);
-        if (blogs == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blogs;
-    }
-
-    @GetMapping("/sort/subject/year/{year}/{subjectName}")
-    @CrossOrigin
-    public List<Blog> sortYearBySubject(@PathVariable("year") String year, @PathVariable("subjectName") String subjectName) {
-        List<Blog> blogs = blogService.sortYearBySubject(year, subjectName);
-        if (blogs == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blogs;
-    }
-
-    @GetMapping("/sort/subject/month/{year}/{month}/{subjectName}")
-    @CrossOrigin
-    public List<Blog> sortMonthBySubject(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("subjectName") String subjectName) {
-        List<Blog> blogs = blogService.sortMonthBySubject(year, month, subjectName);
-        if (blogs == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return blogs;
-    }
-
-    @GetMapping("/sort/subject/week/{year}/{month}/{week}/{subjectName}")
-    @CrossOrigin
-    public List<Blog> sortWeekBySubject(@PathVariable("year") String year, @PathVariable("month") String month, @PathVariable("week") String week, @PathVariable("subjectName") String subjectName) {
-        List<Blog> blogs = blogService.sortWeekBySubject(year, month, week, subjectName);
+    public List<Blog> sortMonthBySubject(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate, @PathVariable("subjectName") String subjectName) throws ParseException {
+        List<Blog> blogs = blogService.sortDateBySubject(startDate, endDate, subjectName);
         if (blogs == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blogs;

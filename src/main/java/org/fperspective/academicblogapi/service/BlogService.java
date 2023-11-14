@@ -103,6 +103,13 @@ public class BlogService {
         return searchRepository.searchBlogByUser(userId, time);
     }
 
+    public List<Blog> findAllLikedBlog(String userId){
+        List<String> blogs = searchRepository.findAllLikedBlog(userId);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
+    }
+
     public List<Blog> findMostLikedBlogByText(String text) {
         List<String> blogs = searchRepository.findMostLikedBlogByText(text);
         List<Blog> blogList = new ArrayList<>();
@@ -153,64 +160,15 @@ public class BlogService {
         return blogList;
     }
 
-    public List<Blog> sortYear(String year) {
-        List<String> blogs = searchRepository.sortBlogByYear(year);
+    public List<Blog> sortDateByTag(String startDate, String endDate, String tag) throws ParseException {
+        List<String> blogs = searchRepository.sortBlogByDateAndTag(startDate, endDate, tag);
         List<Blog> blogList = new ArrayList<>();
         blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
         return blogList;
     }
 
-    public List<Blog> sortMonth(String year, String month) {
-        List<String> blogs = searchRepository.sortBlogByMonth(year, month);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
-    }
-
-    public List<Blog> sortWeek(String year, String month, String week) {
-        List<String> blogs = searchRepository.sortBlogByWeek(year, month, week);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
-    }
-
-    public List<Blog> sortYearByTag(String year, String tag) {
-        List<String> blogs = searchRepository.sortBlogByYearAndTag(year, tag);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
-    }
-
-    public List<Blog> sortMonthByTag(String year, String month, String tag) {
-        List<String> blogs = searchRepository.sortBlogByMonthAndTag(year, month, tag);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
-    }
-
-    public List<Blog> sortWeekByTag(String year, String month, String week, String tag) {
-        List<String> blogs = searchRepository.sortBlogByWeekAndTag(year, month, week, tag);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
-    }
-
-    public List<Blog> sortYearBySubject(String year, String subject) {
-        List<String> blogs = searchRepository.sortBlogByYearAndSubject(year, subject);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
-    }
-
-    public List<Blog> sortMonthBySubject(String year, String month, String subject) {
-        List<String> blogs = searchRepository.sortBlogByMonthAndSubject(year, month, subject);
-        List<Blog> blogList = new ArrayList<>();
-        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
-        return blogList;
-    }
-
-    public List<Blog> sortWeekBySubject(String year, String month, String week, String subject) {
-        List<String> blogs = searchRepository.sortBlogByWeekAndSubject(year, month, week, subject);
+    public List<Blog> sortDateBySubject(String startDate, String endDate, String subject) throws ParseException {
+        List<String> blogs = searchRepository.sortBlogByDateAndSubject(startDate, endDate, subject);
         List<Blog> blogList = new ArrayList<>();
         blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
         return blogList;

@@ -25,6 +25,8 @@ public interface SearchRepository {
 
     List<Blog> searchAllBlogByUser(String userId);
 
+    List<String> findAllLikedBlog(String userId);
+
     List<String> findMostLikedBlogByText(String text);
 
     List<String> findMostLikedBlogByCategory(String category);
@@ -39,23 +41,9 @@ public interface SearchRepository {
 
     List<String> sortBlogAll();
 
-    List<String> sortBlogByYear(String year);
+    List<String> sortBlogByDateAndSubject(String startDate, String endDate, String subject) throws ParseException;
 
-    List<String> sortBlogByMonth(String year, String month);
-
-    List<String> sortBlogByWeek(String year, String month, String week);
-
-    List<String> sortBlogByYearAndSubject(String year, String subject);
-
-    List<String> sortBlogByMonthAndSubject(String year, String month, String subject);
-
-    List<String> sortBlogByWeekAndSubject(String year, String month, String week, String subject);
-
-    List<String> sortBlogByYearAndTag(String year, String tag);
-
-    List<String> sortBlogByMonthAndTag(String year, String month, String tag);
-
-    List<String> sortBlogByWeekAndTag(String year, String month, String week, String tag);
+    List<String> sortBlogByDateAndTag(String startDate, String endDate, String tag) throws ParseException;
 
     List<Blog> sortBlogByDateRange(String startDate, String endDate) throws ParseException;
 
