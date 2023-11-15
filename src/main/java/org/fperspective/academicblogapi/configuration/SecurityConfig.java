@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -49,7 +50,8 @@ public class SecurityConfig {
                     cors.configurationSource(corsConfigurationSource());
                 })
                 .sessionManagement((session) -> {
-                    session.sessionConcurrency((concur) -> {
+                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .sessionConcurrency((concur) -> {
                         concur.maximumSessions(1).expiredUrl("/login?expired");
                     });
                 })
@@ -61,6 +63,7 @@ public class SecurityConfig {
                     // oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
                     oc.failureHandler(new SimpleUrlAuthenticationFailureHandler(frontendUrl + "/login"));
                     oc.successHandler(oAuth2LoginSuccessHandler);
+                    
                     // oc.defaultSuccessUrl(frontendUrl);
                     // oc.failureUrl(frontendUrl+"/login");
                 })

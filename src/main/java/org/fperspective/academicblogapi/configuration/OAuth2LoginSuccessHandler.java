@@ -106,13 +106,15 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                                 credential.setFullName(fullName);
                                 credential.setLoginProvider(LoginProvider.GOOGLE);
                                 credential.setAvatarUrl(avatar_url);
-                                credential.setCampus(campus);
-                                credential.setTerm(term);
                                 if("fpt.edu.vn".equals(organization)){
                                     credential.setCategory(category);
+                                    credential.setTerm(term);
+                                    credential.setCampus(campus);
                                 }
                                 else{
                                     credential.setCategory(null);
+                                    credential.setTerm(null);
+                                    credential.setCampus(null);
                                 }
 
                                 try {

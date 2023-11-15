@@ -209,7 +209,7 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/tag/month/{startDate}/{endDate}/{tagName}")
+    @GetMapping("/sort/tag/date/{startDate}/{endDate}/{tagName}")
     @CrossOrigin
     public List<Blog> sortMonth(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate, @PathVariable("tagName") String tagName) throws ParseException {
         List<Blog> blogs = blogService.sortDateByTag(startDate, endDate, tagName);
@@ -218,7 +218,7 @@ public class BlogController {
         return blogs;
     }
 
-    @GetMapping("/sort/subject/month/{startDate}/{endDate}/{subjectName}")
+    @GetMapping("/sort/subject/date/{startDate}/{endDate}/{subjectName}")
     @CrossOrigin
     public List<Blog> sortMonthBySubject(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate, @PathVariable("subjectName") String subjectName) throws ParseException {
         List<Blog> blogs = blogService.sortDateBySubject(startDate, endDate, subjectName);
