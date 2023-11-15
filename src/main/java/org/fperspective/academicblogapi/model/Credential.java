@@ -214,18 +214,7 @@ import net.minidev.json.annotate.JsonIgnore;
     }
 
     public void setCategory(String category) {
-        switch(category){
-            case "se":
-                this.category = "Software Engineer";
-            break;
-
-            case "de":
-                this.category = "Graphic Design";
-            break;
-
-            default:
-                this.category = null;
-        };
+        this.category = category;
     }
 
     public String getFullName() {
