@@ -1039,23 +1039,37 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<Credential> searchUserByCategory(String category) {
+        public List<Credential> searchUserByCategory(String category, String limit) {
+
                 final List<Credential> users = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Credential");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-
-                                new Document("$search",
-                                                new Document("index", "credential")
-                                                                .append("text",
-                                                                                new Document("query", category))),
-
+                AggregateIterable<Document> result; 
+                if("all".equals(limit)){
+                        result = collection.aggregate(Arrays.asList(new Document("$search",
+                                        new Document("index", "credential")
+                                                        .append("text",
+                                                                        new Document("query", category)
+                                                                                        .append("path", "category"))),
+                                        new Document("$match",
+                                                        new Document("status", true)),
+                                        new Document("$sort",
+                                                        new Document("createdDate", 1L))));
+                }
+                else{
+                        Long limitLong = Long.parseLong(limit);
+                        result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "credential")
+                                                .append("text",
+                                                                new Document("query", category)
+                                                                                .append("path", "category"))),
                                 new Document("$match",
                                                 new Document("status", true)),
                                 new Document("$sort",
-                                                new Document("userName", 1L)),
-                                new Document("$limit", 5L)));
+                                                new Document("createdDate", 1L)),
+                                new Document("$limit", limitLong)));
+                }
 
                 result.forEach((doc) -> users.add(converter.read(Credential.class, doc)));
 
@@ -1064,24 +1078,38 @@ public class SearchRepositoryImpl implements SearchRepository {
 
         @Override
         // User search by userName with autocorrect by 2 letters at 3rd index
-        public List<Credential> searchUserByCampus(String campus) {
+        public List<Credential> searchUserByCampus(String campus, String limit) {
 
                 final List<Credential> users = new ArrayList<>();
 
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Credential");
-                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-
-                                new Document("$search",
-                                                new Document("index", "credential")
-                                                                .append("text",
-                                                                                new Document("query", campus))),
-
+                AggregateIterable<Document> result; 
+                if("all".equals(limit)){
+                        result = collection.aggregate(Arrays.asList(new Document("$search",
+                                        new Document("index", "credential")
+                                                        .append("text",
+                                                                        new Document("query", campus)
+                                                                                        .append("path", "campus"))),
+                                        new Document("$match",
+                                                        new Document("status", true)),
+                                        new Document("$sort",
+                                                        new Document("createdDate", 1L))));
+                }
+                else{
+                        Long limitLong = Long.parseLong(limit);
+                        result = collection.aggregate(Arrays.asList(new Document("$search",
+                                new Document("index", "credential")
+                                                .append("text",
+                                                                new Document("query", campus)
+                                                                                .append("path", "campus"))),
                                 new Document("$match",
                                                 new Document("status", true)),
                                 new Document("$sort",
-                                                new Document("userName", 1L)),
-                                new Document("$limit", 5L)));
+                                                new Document("createdDate", 1L)),
+                                new Document("$limit", limitLong)));
+                }
+
 
                 result.forEach((doc) -> users.add(converter.read(Credential.class, doc)));
 
@@ -1225,7 +1253,8 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<String> findMostUsedTagByDate(String limit, String startDate, String endDate) throws ParseException {
+        public List<String> findMostUsedTagByDate(String limit, String startDate, String endDate)
+                        throws ParseException {
 
                 final List<String> tags = new ArrayList<>();
 
@@ -1277,7 +1306,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                         }
                 });
 
-                return tags;                
+                return tags;
         }
 
         @Override
@@ -1449,7 +1478,8 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
-        public List<String> findMostUsedSubjectByDate(String limit, String startDate, String endDate) throws ParseException {
+        public List<String> findMostUsedSubjectByDate(String limit, String startDate, String endDate)
+                        throws ParseException {
 
                 final List<String> subjects = new ArrayList<>();
 
@@ -1501,7 +1531,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                         }
                 });
 
-                return subjects;                
+                return subjects;
         }
 
         @Override

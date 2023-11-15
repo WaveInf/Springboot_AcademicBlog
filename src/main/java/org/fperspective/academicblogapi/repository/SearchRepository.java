@@ -60,9 +60,9 @@ public interface SearchRepository {
     //User method
     List<Credential> searchUserByText(String text);
 
-    List<Credential> searchUserByCampus(String campus);
+    List<Credential> searchUserByCampus(String campus, String limit);
 
-    List<Credential> searchUserByCategory(String category);
+    List<Credential> searchUserByCategory(String category, String limit);
 
     Credential searchUserByEmail(String email);
 

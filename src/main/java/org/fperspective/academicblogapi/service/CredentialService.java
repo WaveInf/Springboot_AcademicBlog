@@ -24,10 +24,10 @@ public interface CredentialService {
 
     List<Credential> search(String text);
 
-    List<Credential> searchByCategory(String category);
+    List<Credential> searchByCategory(String category, String limit);
 
-    List<Credential> searchByCampus(String campus);
-
+    List<Credential> searchByCampus(String campus, String limit);
+ 
     Credential searchByEmail(String email);
 
     Credential update(Credential user);

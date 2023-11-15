@@ -69,13 +69,13 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     @Override
-    public List<Credential> searchByCategory(String category) {
-        return searchRepository.searchUserByCategory(category);
+    public List<Credential> searchByCategory(String category, String limit) {
+        return searchRepository.searchUserByCategory(category, limit);
     }
 
     @Override
-    public List<Credential> searchByCampus(String campus) {
-        return searchRepository.searchUserByCampus(campus);
+    public List<Credential> searchByCampus(String campus, String limit) {
+        return searchRepository.searchUserByCampus(campus, limit);
     }
 
     @Override

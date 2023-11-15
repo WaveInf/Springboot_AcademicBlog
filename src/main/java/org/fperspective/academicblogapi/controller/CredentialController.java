@@ -79,21 +79,21 @@ public class CredentialController {
         return users;
     }
 
-    @GetMapping("/category/{category}")
+    @GetMapping("/category/{category}/{limit}")
     @CrossOrigin
-    public List<Credential> searchByCategory(@PathVariable String category) {
+    public List<Credential> searchByCategory(@PathVariable("category") String category, @PathVariable("limit") String limit) {
         String newCategory = category.toUpperCase();
-        List<Credential> users = credentialService.searchByCategory(newCategory);
+        List<Credential> users = credentialService.searchByCategory(newCategory, limit);
         if (users == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return users;
     }
 
-    @GetMapping("/campus/{campus}")
+    @GetMapping("/campus/{campus}/{limit}")
     @CrossOrigin
-    public List<Credential> searchByCampus(@PathVariable String campus) {
+    public List<Credential> searchByCampus(@PathVariable("campus") String campus, @PathVariable("limit") String limit) {
         String newCampus = campus.toUpperCase();
-        List<Credential> users = credentialService.searchByCampus(newCampus);
+        List<Credential> users = credentialService.searchByCampus(newCampus, limit);
         if (users == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return users;
