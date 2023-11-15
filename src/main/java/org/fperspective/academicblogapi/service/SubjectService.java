@@ -1,5 +1,6 @@
 package org.fperspective.academicblogapi.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +53,18 @@ public class SubjectService {
 
     public List<Subject> findMostUsedSubject(String limit) {
         List<String> subjects = searchRepository.findMostUsedSubject(limit);
+        List<Subject> subjectList = new ArrayList<>();
+        subjects.forEach((subject) ->{
+            Subject newSubject = subjectRepository.findById(subject).orElse(null);
+            // if(newSubject.isStatus()){
+                subjectList.add(newSubject);
+            // }
+        });
+        return subjectList;
+    }
+
+    public List<Subject> findMostUsedSubjectByDate(String limit, String startDate, String endDate) throws ParseException {
+        List<String> subjects = searchRepository.findMostUsedSubjectByDate(limit, startDate, endDate);
         List<Subject> subjectList = new ArrayList<>();
         subjects.forEach((subject) ->{
             Subject newSubject = subjectRepository.findById(subject).orElse(null);

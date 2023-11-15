@@ -1208,6 +1208,62 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
+        public List<String> findMostUsedTagByDate(String limit, String startDate, String endDate) throws ParseException {
+
+                final List<String> tags = new ArrayList<>();
+
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date start = formatter.parse(startDate);
+
+                Date end = formatter.parse(endDate);
+
+                Long limitLong = Long.parseLong(limit);
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)
+                                                                .append("uploadDate",
+                                                                                new Document("$gte",
+                                                                                                start)
+                                                                                                .append("$lte",
+                                                                                                                end))),
+                                new Document("$unwind",
+                                                new Document("path", "$btag").append(
+                                                                "preserveNullAndEmptyArrays",
+                                                                false)),
+                                new Document("$match",
+                                                new Document("btag.status", true)),
+                                new Document("$sortByCount", "$btag._id"),
+                                new Document("$limit", limitLong)));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                tags.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return tags;                
+        }
+
+        @Override
         public Integer findMostUsedTagCount(String tagName) {
 
                 final List<BTag> count = new ArrayList<>();
@@ -1326,7 +1382,8 @@ public class SearchRepositoryImpl implements SearchRepository {
 
                         result = collection.aggregate(Arrays.asList(
                                         new Document("$match",
-                                                        new Document("status", true)),
+                                                        new Document("status", true)
+                                                                        .append("deleted", false)),
                                         new Document("$unwind",
                                                         new Document("path", "$subject").append(
                                                                         "preserveNullAndEmptyArrays",
@@ -1372,6 +1429,62 @@ public class SearchRepositoryImpl implements SearchRepository {
                 });
 
                 return subjects;
+        }
+
+        @Override
+        public List<String> findMostUsedSubjectByDate(String limit, String startDate, String endDate) throws ParseException {
+
+                final List<String> subjects = new ArrayList<>();
+
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date start = formatter.parse(startDate);
+
+                Date end = formatter.parse(endDate);
+
+                Long limitLong = Long.parseLong(limit);
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Blog");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+                                new Document("$match",
+                                                new Document("status", true)
+                                                                .append("deleted", false)
+                                                                .append("uploadDate",
+                                                                                new Document("$gte",
+                                                                                                start)
+                                                                                                .append("$lte",
+                                                                                                                end))),
+                                new Document("$unwind",
+                                                new Document("path", "$subject").append(
+                                                                "preserveNullAndEmptyArrays",
+                                                                false)),
+                                new Document("$match",
+                                                new Document("subject.status", true)),
+                                new Document("$sortByCount", "$subject._id"),
+                                new Document("$limit", limitLong)));
+
+                result.forEach((doc) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        // Parse the JSON string
+                        JsonNode jsonNode;
+                        try {
+                                jsonNode = objectMapper.readTree(converter.read(String.class, doc));
+                                // Access the value associated with "$oid"
+                                String oidValue = jsonNode.get("_id")
+                                                .get("$oid")
+                                                .asText();
+                                subjects.add(oidValue);
+                        } catch (JsonMappingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
+                });
+
+                return subjects;                
         }
 
         @Override

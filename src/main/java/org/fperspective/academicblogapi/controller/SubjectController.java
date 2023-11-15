@@ -1,6 +1,7 @@
 package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 
@@ -65,13 +66,22 @@ public class SubjectController {
     @GetMapping("/sort/{limit}")
     @CrossOrigin
     //Show most popular subjects and its used count as Hashmap
-    public List<Subject> search(@PathVariable String limit) {
+    public List<Subject> findMostUsedSubject(@PathVariable String limit) {
         List<Subject> subjects = subjectService.findMostUsedSubject(limit);
         if (subjects == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return subjects;
     }
 
+    @GetMapping("/date/{limit}/{startDate}/{endDate}")
+    @CrossOrigin
+    //Show most popular subjects and its used count as Hashmap
+    public List<Subject> findMostUsedSubjectByDate(@PathVariable("limit") String limit, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) throws ParseException {
+        List<Subject> subjects = subjectService.findMostUsedSubjectByDate(limit, startDate, endDate);
+        if (subjects == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return subjects;
+    }
 
     @GetMapping("/search/blog/{blogId}")
     @CrossOrigin

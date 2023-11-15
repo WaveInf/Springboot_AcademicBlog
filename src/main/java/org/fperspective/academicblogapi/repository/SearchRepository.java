@@ -69,6 +69,8 @@ public interface SearchRepository {
     //Tag method
     List<String> findMostUsedTag(String limit);
 
+    List<String> findMostUsedTagByDate(String limit, String startDate, String endDate) throws ParseException;
+
     Integer findMostUsedTagCount(String tagName);
 
     List<String> findTagByBlog(String blogId);
@@ -81,6 +83,8 @@ public interface SearchRepository {
     //Subject method
 
     List<String> findMostUsedSubject(String limit);
+
+    List<String> findMostUsedSubjectByDate(String limit, String startDate, String endDate) throws ParseException;
 
     Integer findMostUsedSubjectCount(String subjectName);
 

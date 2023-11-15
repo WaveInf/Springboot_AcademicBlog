@@ -1,5 +1,6 @@
 package org.fperspective.academicblogapi.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -56,6 +57,18 @@ public class TagService {
 
     public List<BTag> findMostUsedTag(String limit) {
         List<String> tags = searchRepository.findMostUsedTag(limit);
+        List<BTag> tagList = new ArrayList<>();
+        tags.forEach((tag) ->{
+            BTag btag = tagRepository.findById(tag).orElse(null);
+            if(btag.isStatus()){
+                tagList.add(btag);
+            }
+        });
+        return tagList;
+    }
+
+    public List<BTag> findMostUsedTagByDate(String limit, String startDate, String endDate) throws ParseException {
+        List<String> tags = searchRepository.findMostUsedTagByDate(limit, startDate, endDate);
         List<BTag> tagList = new ArrayList<>();
         tags.forEach((tag) ->{
             BTag btag = tagRepository.findById(tag).orElse(null);

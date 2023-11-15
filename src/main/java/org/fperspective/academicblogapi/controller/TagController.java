@@ -1,6 +1,7 @@
 package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import org.fperspective.academicblogapi.model.BTag;
@@ -65,13 +66,22 @@ public class TagController {
     @GetMapping("/sort/{limit}")
     @CrossOrigin
     //Show most popular tags and its used count as Hashmap
-    public List<BTag> search(@PathVariable String limit) {
+    public List<BTag> findMostUsedTag(@PathVariable String limit) {
         List<BTag> tags = tagService.findMostUsedTag(limit);
         if (tags == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return tags;
     }
 
+    @GetMapping("/date/{limit}/{startDate}/{endDate}")
+    @CrossOrigin
+    //Show most popular tags and its used count as Hashmap
+    public List<BTag> findMostUsedTagByDate(@PathVariable("limit") String limit, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) throws ParseException {
+        List<BTag> tags = tagService.findMostUsedTagByDate(limit, startDate, endDate);
+        if (tags == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return tags;
+    }
 
     @GetMapping("/search/blog/{blogId}")
     @CrossOrigin
