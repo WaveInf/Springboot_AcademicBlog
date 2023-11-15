@@ -1039,6 +1039,30 @@ public class SearchRepositoryImpl implements SearchRepository {
         }
 
         @Override
+        public List<Credential> searchUserByCategory(String category) {
+                final List<Credential> users = new ArrayList<>();
+
+                MongoDatabase database = client.getDatabase("Main");
+                MongoCollection<Document> collection = database.getCollection("Credential");
+                AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+
+                                new Document("$search",
+                                                new Document("index", "credential")
+                                                                .append("text",
+                                                                                new Document("query", category))),
+
+                                new Document("$match",
+                                                new Document("status", true)),
+                                new Document("$sort",
+                                                new Document("userName", 1L)),
+                                new Document("$limit", 5L)));
+
+                result.forEach((doc) -> users.add(converter.read(Credential.class, doc)));
+
+                return users;
+        }
+
+        @Override
         // User search by userName with autocorrect by 2 letters at 3rd index
         public List<Credential> searchUserByCampus(String campus) {
 
@@ -1051,14 +1075,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                 new Document("$search",
                                                 new Document("index", "credential")
                                                                 .append("text",
-                                                                                new Document("query", campus)
-                                                                                                .append("path", Arrays
-                                                                                                                .asList("campus"))
-                                                                                                .append("fuzzy",
-                                                                                                                new Document("maxEdits",
-                                                                                                                                1L)
-                                                                                                                                .append("prefixLength",
-                                                                                                                                                4L)))),
+                                                                                new Document("query", campus))),
 
                                 new Document("$match",
                                                 new Document("status", true)),

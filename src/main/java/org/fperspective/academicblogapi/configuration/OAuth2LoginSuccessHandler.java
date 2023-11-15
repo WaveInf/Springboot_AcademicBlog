@@ -59,7 +59,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                 result = m.group(1).toLowerCase();
             }
             
-            String category = result;
+            String category = result.toUpperCase();
             String fullName = attributes.getOrDefault("given_name", "").toString();
             String userName = attributes.getOrDefault("name", "").toString();
             String avatar_url = attributes.getOrDefault("picture", "").toString();

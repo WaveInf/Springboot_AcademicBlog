@@ -24,6 +24,8 @@ public interface CredentialService {
 
     List<Credential> search(String text);
 
+    List<Credential> searchByCategory(String category);
+
     List<Credential> searchByCampus(String campus);
 
     Credential searchByEmail(String email);

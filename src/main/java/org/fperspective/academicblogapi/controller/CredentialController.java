@@ -79,6 +79,15 @@ public class CredentialController {
         return users;
     }
 
+    @GetMapping("/category/{category}")
+    @CrossOrigin
+    public List<Credential> searchByCategory(@PathVariable String category) {
+        List<Credential> users = credentialService.searchByCategory(category);
+        if (users == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return users;
+    }
+
     @GetMapping("/campus/{campus}")
     @CrossOrigin
     public List<Credential> searchByCampus(@PathVariable String campus) {

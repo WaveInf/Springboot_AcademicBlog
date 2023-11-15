@@ -62,6 +62,8 @@ public interface SearchRepository {
 
     List<Credential> searchUserByCampus(String campus);
 
+    List<Credential> searchUserByCategory(String category);
+
     Credential searchUserByEmail(String email);
 
     List<String> findRecommendedUser(String search, String currentUser);
