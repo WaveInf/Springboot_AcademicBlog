@@ -10,18 +10,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${FRONT_END_URL:default}")
-    private String frontendUrl;
+    // @Value("${FRONT_END_URL:default}")
+    // private String frontendUrl;
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .maxAge(1000)
-                // .allowedOrigins(frontendUrl) // your reactjs URL
-                .allowedOriginPatterns("*")
-                .allowCredentials(true)
-                .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE")
-                .allowedHeaders("Content-Type", "Authorization") // Adjust headers you need to allow
-                .allowCredentials(true); // Add only if you want to access cookie
-    }
+    // @Override
+    // public void addCorsMappings(CorsRegistry registry) {
+    //     registry.addMapping("/**")
+    //             .maxAge(1000)
+    //             // .allowedOrigins(frontendUrl) // your reactjs URL
+    //             .allowedOriginPatterns("*")
+    //             .allowCredentials(true)
+    //             .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE")
+    //             .allowedHeaders("Content-Type", "Authorization") // Adjust headers you need to allow
+    //             .allowCredentials(true); // Add only if you want to access cookie
+    // }
 }
