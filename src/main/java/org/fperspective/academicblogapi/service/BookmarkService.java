@@ -1,8 +1,11 @@
 package org.fperspective.academicblogapi.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Bookmark;
 import org.fperspective.academicblogapi.repository.BookmarkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,9 @@ public class BookmarkService {
     @Autowired
     private BookmarkRepository bookmarkRepository;
 
+    @Autowired
+    private BlogService blogService;
+
     public Collection<Bookmark> get() {
         return bookmarkRepository.findAll();
     }
@@ -22,6 +28,21 @@ public class BookmarkService {
         checkExist(userId);
         return bookmarkRepository.findById(userId).orElse(null);
     }
+
+    public List<Blog> getBookmarkedBlog(String userId) {
+        checkExist(userId);
+        Bookmark bookmark = bookmarkRepository.findById(userId).orElse(null);
+        String[] blogs = bookmark.getBookmarkedPost();
+        List<Blog> blogList = new ArrayList<>();
+        for(int i = 0; i<= (blogs.length-1);i++){
+            Blog newBlog = blogService.get(blogs[i]);
+            if(newBlog!=null){
+                blogList.add(newBlog);
+            }
+        }
+        return blogList;
+    }
+
 
     public void remove(String userId) {
         bookmarkRepository.deleteById(userId);

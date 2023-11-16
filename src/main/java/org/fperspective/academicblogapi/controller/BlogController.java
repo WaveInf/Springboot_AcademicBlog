@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.service.BlogService;
+import org.fperspective.academicblogapi.service.BookmarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,6 +44,10 @@ public class BlogController {
     // @Lazy
     private BlogService blogService;
 
+    @Autowired
+    // @Lazy
+    private BookmarkService bookmarkService;
+
     @Hidden
     @RequestMapping("/")
     @CrossOrigin
@@ -63,6 +68,15 @@ public class BlogController {
         if (blog == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return blog;
+    }
+
+    @GetMapping("/list/{userId}")
+    @CrossOrigin
+    public List<Blog> getBookmarkedBlog(@PathVariable String userId) {
+        List<Blog> bookmark = bookmarkService.getBookmarkedBlog(userId);
+        if (bookmark == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return bookmark;
     }
 
     @GetMapping("/search/text/{text}/{time}")

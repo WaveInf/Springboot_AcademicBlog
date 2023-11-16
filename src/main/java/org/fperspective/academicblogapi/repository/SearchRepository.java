@@ -45,7 +45,7 @@ public interface SearchRepository {
 
     List<String> sortBlogByDateAndTag(String startDate, String endDate, String tag) throws ParseException;
 
-    List<Blog> sortBlogByDateRange(String startDate, String endDate) throws ParseException;
+    List<String> sortBlogByDateRange(String startDate, String endDate) throws ParseException;
 
     List<Blog> findUnapprovedBlogs(String operator);
 

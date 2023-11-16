@@ -34,7 +34,13 @@ public class BlogService {
     }
 
     public Blog get(String blogId) {
-        return blogRepository.findById(blogId).orElse(null);
+        Blog blog = blogRepository.findById(blogId).orElse(null);
+        if(blog.isDeleted()){
+            return null;
+        }
+        else{
+            return blog;
+        }
     }
 
     public Blog remove(String blogId) {
@@ -175,7 +181,10 @@ public class BlogService {
     }
 
     public List<Blog> sortByDateRange(String startDate, String endDate) throws ParseException{
-        return searchRepository.sortBlogByDateRange(startDate, endDate);
+         List<String> blogs = searchRepository.sortBlogByDateRange(startDate, endDate);
+        List<Blog> blogList = new ArrayList<>();
+        blogs.forEach((blog) -> blogList.add(blogRepository.findById(blog).get()));
+        return blogList;
     }
 
     public void deleteTagInBlog(String tagName) {

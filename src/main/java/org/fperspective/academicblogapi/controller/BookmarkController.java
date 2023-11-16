@@ -2,7 +2,9 @@ package org.fperspective.academicblogapi.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
+import org.fperspective.academicblogapi.model.Blog;
 import org.fperspective.academicblogapi.model.Bookmark;
 import org.fperspective.academicblogapi.service.BookmarkService;
 import org.springframework.beans.factory.annotation.Autowired;

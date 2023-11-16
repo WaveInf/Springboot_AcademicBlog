@@ -2,7 +2,7 @@ package org.fperspective.academicblogapi.configuration;
 
 import java.util.List;
 
-import org.fperspective.academicblogapi.filter.CorsFilter;
+// import org.fperspective.academicblogapi.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -49,8 +49,8 @@ public class SecurityConfig {
                     cors.configurationSource(corsConfigurationSource());
                 })
                 .sessionManagement((session) -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .sessionConcurrency((concur) -> {
+                    // session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    session.sessionConcurrency((concur) -> {
                         concur.maximumSessions(1).expiredUrl("/login?expired");
                     });
                 })
@@ -75,16 +75,16 @@ public class SecurityConfig {
     //Allow CORS for all HTTPMethod 
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedHeaders(List.of("Access-Control-Allow-Methods", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Origin", "Access-Control-Max-Age", "Access-Control-Request-Headers"));
+        // configuration.setAllowedHeaders(List.of("Access-Control-Allow-Methods", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Origin", "Access-Control-Max-Age", "Access-Control-Request-Headers"));
         configuration.setAllowedOrigins(List.of(frontendUrl));
+        configuration.addAllowedHeader("*");
         // configuration.setAllowedOrigins(null);
         // configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowCredentials(true);
         configuration.addAllowedMethod(HttpMethod.GET);
         configuration.addAllowedMethod(HttpMethod.POST);
         configuration.addAllowedMethod(HttpMethod.OPTIONS);
         configuration.addAllowedMethod(HttpMethod.DELETE);
-        configuration.setMaxAge(1728000L);
+        // configuration.setMaxAge(1728000L);
         
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
