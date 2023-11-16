@@ -77,7 +77,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         // configuration.setAllowedOrigins(List.of(frontendUrl));
         configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.checkOrigin(frontendUrl);
+        // configuration.checkOrigin(frontendUrl);
         configuration.setMaxAge(1000L);
         configuration.setAllowCredentials(true);
         configuration.addAllowedHeader("*");
@@ -85,6 +85,8 @@ public class SecurityConfig {
         configuration.addAllowedMethod(HttpMethod.GET);
         configuration.addAllowedMethod(HttpMethod.POST);
         configuration.addAllowedMethod(HttpMethod.OPTIONS);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
+        
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
