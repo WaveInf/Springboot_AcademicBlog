@@ -37,15 +37,11 @@ public class SecurityConfig {
     @Autowired
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    // @Autowired
-    // private CorsFilter corsFilter;
-
     @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
     
     @Bean
     // @Order(1) 
-    //Add authentication (Google, Github, username/password) , CredentialService userCredentialService
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -66,14 +62,7 @@ public class SecurityConfig {
                     // oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
                     oc.failureHandler(new SimpleUrlAuthenticationFailureHandler(frontendUrl + "/login"));
                     oc.successHandler(oAuth2LoginSuccessHandler);
-                    
-                    // oc.defaultSuccessUrl(frontendUrl);
-                    // oc.failureUrl(frontendUrl+"/login");
                 })
-                // .oauth2ResourceServer(oauth2 -> {
-                //     oauth2.bearerTokenResolver(bearerTokenResolver());
-                // })
-                // .formLogin(Customizer.withDefaults())
                 .build();
     }
 
@@ -86,7 +75,9 @@ public class SecurityConfig {
     //Allow CORS for all HTTPMethod 
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontendUrl));
+        // configuration.setAllowedOrigins(List.of(frontendUrl));
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowCredentials(true);
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedMethod(HttpMethod.GET);

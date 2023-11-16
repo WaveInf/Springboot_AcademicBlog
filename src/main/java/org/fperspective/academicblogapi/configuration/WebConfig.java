@@ -16,7 +16,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*") // your reactjs URL
+                .maxAge(1000)
+                // .allowedOrigins(frontendUrl) // your reactjs URL
+                .allowedOriginPatterns("*")
                 .allowCredentials(true)
                 .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE")
                 .allowedHeaders("Content-Type", "Authorization") // Adjust headers you need to allow
