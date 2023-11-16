@@ -2,6 +2,7 @@ package org.fperspective.academicblogapi.configuration;
 
 import java.util.List;
 
+import org.fperspective.academicblogapi.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -34,8 +35,10 @@ import lombok.extern.log4j.Log4j2;
 public class SecurityConfig {
 
     @Autowired
-    // @Lazy
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+    // @Autowired
+    // private CorsFilter corsFilter;
 
     @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
