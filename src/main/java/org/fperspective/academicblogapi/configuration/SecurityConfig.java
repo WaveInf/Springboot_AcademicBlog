@@ -1,6 +1,5 @@
 package org.fperspective.academicblogapi.configuration;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.fperspective.academicblogapi.filter.CorsFilter;
@@ -32,7 +31,7 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 @EnableMethodSecurity
 @EnableWebMvc
-@ComponentScan({ "main.controller", "main.repository", "main.service", "main.configuration" })
+@ComponentScan({"main.controller", "main.repository", "main.service", "main.configuration"})
 public class SecurityConfig {
 
     @Autowired
@@ -40,10 +39,10 @@ public class SecurityConfig {
 
     @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
-
+    
     @Bean
-    // @Order(1)
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    // @Order(1) 
+    SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {
@@ -51,14 +50,14 @@ public class SecurityConfig {
                 })
                 .sessionManagement((session) -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                            .sessionConcurrency((concur) -> {
-                                concur.maximumSessions(1).expiredUrl("/login?expired");
-                            });
+                    .sessionConcurrency((concur) -> {
+                        concur.maximumSessions(1).expiredUrl("/login?expired");
+                    });
                 })
                 .authorizeHttpRequests(author -> {
-                    author.requestMatchers("/").permitAll();
-                    author.anyRequest().authenticated();
-                })
+                author.requestMatchers("/").permitAll();                
+                author.anyRequest().authenticated();
+            })
                 .oauth2Login(oc -> {
                     // oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
                     oc.failureHandler(new SimpleUrlAuthenticationFailureHandler(frontendUrl + "/login"));
@@ -73,15 +72,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    // Allow CORS for all HTTPMethod
-    CorsConfigurationSource corsConfigurationSource() {
+    //Allow CORS for all HTTPMethod 
+    CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of(frontendUrl));
+        // configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.checkOrigin(frontendUrl);
         configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(List.of("Access-Control-Allow-Methods", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Origin", "Access-Control-Max-Age", "Access-Control-Request-Headers"));;
+        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod(HttpMethod.POST);
+        configuration.addAllowedMethod(HttpMethod.OPTIONS);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
         configuration.setMaxAge(1728000L);
-
+        
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
