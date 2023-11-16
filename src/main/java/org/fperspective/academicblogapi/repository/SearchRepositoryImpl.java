@@ -1121,7 +1121,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                 MongoDatabase database = client.getDatabase("Main");
                 MongoCollection<Document> collection = database.getCollection("Credential");
                 AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
-                                new Document("email", email))));
+                                new Document("email", email)
+                                .append("status", true))));
 
                 return converter.read(Credential.class, result.first());
         }

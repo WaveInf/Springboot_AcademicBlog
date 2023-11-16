@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fperspective.academicblogapi.model.Credential;
+import org.fperspective.academicblogapi.service.BlogService;
 import org.fperspective.academicblogapi.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,10 @@ public class CredentialController {
     @Autowired
     // @Lazy
     private CredentialService credentialService;
+
+    @Autowired
+    // @Lazy
+    private BlogService blogService;
 
     @Hidden
     @RequestMapping("/")
@@ -121,6 +126,7 @@ public class CredentialController {
     @CrossOrigin
     public void delete(@PathVariable String userId) {
         credentialService.remove(userId);
+        blogService.deleteAllBlogByUser(userId);
     }
 
     @PostMapping("/show")
