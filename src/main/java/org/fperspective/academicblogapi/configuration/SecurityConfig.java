@@ -76,8 +76,8 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(List.of("Access-Control-Allow-Methods", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Origin", "Access-Control-Max-Age", "Access-Control-Request-Headers"));
-        // configuration.setAllowedOrigins(List.of(frontendUrl));
-        configuration.setAllowedOrigins(null);
+        configuration.setAllowedOrigins(List.of(frontendUrl));
+        // configuration.setAllowedOrigins(null);
         // configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod(HttpMethod.GET);
