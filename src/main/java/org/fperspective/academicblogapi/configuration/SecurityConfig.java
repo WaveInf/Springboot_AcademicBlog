@@ -79,7 +79,6 @@ public class SecurityConfig {
         // configuration.setAllowedOrigins(List.of(frontendUrl));
         configuration.setAllowedOrigins(null);
         // configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.checkOrigin(frontendUrl);
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod(HttpMethod.GET);
         configuration.addAllowedMethod(HttpMethod.POST);
