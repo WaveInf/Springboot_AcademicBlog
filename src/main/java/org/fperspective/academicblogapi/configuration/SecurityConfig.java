@@ -42,7 +42,7 @@ public class SecurityConfig {
 
     @Value("${FRONT_END_URL:default}")
     private String frontendUrl;
-
+    
     @Bean
     // @Order(1) 
     //Add authentication (Google, Github, username/password) , CredentialService userCredentialService
