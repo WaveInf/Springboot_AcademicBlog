@@ -124,7 +124,8 @@ public class SearchRepositoryImpl implements SearchRepository {
                                 new Document("$search",
                                                 new Document("index", "blog")
                                                                 .append("text",
-                                                                                new Document("query", subject))),
+                                                                                new Document("query", subject)
+                                                                                                .append("path", "subject.subjectName"))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
@@ -151,21 +152,17 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("index", "blog")
                                                                 .append("text",
                                                                                 new Document("query", tag)
-                                                                                                .append("path", Arrays
-                                                                                                                .asList(
-                                                                                                                                "btag.tagName"))
+                                                                                                .append("path", "btag.tagName")
                                                                                                 .append("fuzzy",
                                                                                                                 new Document("maxEdits",
                                                                                                                                 1L)
                                                                                                                                 .append("prefixLength",
                                                                                                                                                 4L)))),
-
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
                                 new Document("$sort",
                                                 new Document("uploadDate", timeLong))));
-
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
 
                 return blogs;
