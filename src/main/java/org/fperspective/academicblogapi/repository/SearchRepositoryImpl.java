@@ -96,12 +96,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                                                 new Document("query", category)
                                                                                                 .append("path", Arrays
                                                                                                                 .asList(
-                                                                                                                                "category.categoryName"))
-                                                                                                .append("fuzzy",
-                                                                                                                new Document("maxEdits",
-                                                                                                                                1L)
-                                                                                                                                .append("prefixLength",
-                                                                                                                                                4L)))),
+                                                                                                                                "category.categoryName")))),
 
                                 new Document("$match",
                                                 new Document("status", true)
@@ -129,22 +124,12 @@ public class SearchRepositoryImpl implements SearchRepository {
                                 new Document("$search",
                                                 new Document("index", "blog")
                                                                 .append("text",
-                                                                                new Document("query", subject)
-                                                                                                .append("path", Arrays
-                                                                                                                .asList(
-                                                                                                                                "subject.subjectName"))
-                                                                                                .append("fuzzy",
-                                                                                                                new Document("maxEdits",
-                                                                                                                                1L)
-                                                                                                                                .append("prefixLength",
-                                                                                                                                                4L)))),
-
+                                                                                new Document("query", subject))),
                                 new Document("$match",
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
                                 new Document("$sort",
-                                                new Document("uploadDate", timeLong)),
-                                new Document("$limit", 5L)));
+                                                new Document("uploadDate", timeLong))));
 
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
 
@@ -179,8 +164,7 @@ public class SearchRepositoryImpl implements SearchRepository {
                                                 new Document("status", true)
                                                                 .append("deleted", false)),
                                 new Document("$sort",
-                                                new Document("uploadDate", timeLong)),
-                                new Document("$limit", 5L)));
+                                                new Document("uploadDate", timeLong))));
 
                 result.forEach((doc) -> blogs.add(converter.read(Blog.class, doc)));
 
