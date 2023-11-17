@@ -62,6 +62,7 @@ public class SecurityConfig {
                     // oc.userInfoEndpoint(ui -> ui.userService(authService.oauth2LoginHandler()));
                     oc.failureHandler(new SimpleUrlAuthenticationFailureHandler(frontendUrl + "/login"));
                     oc.successHandler(oAuth2LoginSuccessHandler);
+                    // oc.defaultSuccessUrl(frontendUrl);
                 })
                 .build();
     }

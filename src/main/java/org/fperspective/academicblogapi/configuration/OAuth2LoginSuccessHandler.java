@@ -45,10 +45,14 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         
         OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
 
+        boolean checkLogin = true;
+
         if("google".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())){
             
             DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();
             Map<String, Object> attributes = principal.getAttributes();
+            String organization = attributes.getOrDefault("hd", "").toString();
+            if("fpt.edu.vn".equals(organization) || "fe.edu.vn".equals(organization)){
             String email = attributes.getOrDefault("email", "").toString();
             String pattern = "([a-zA-Z]{2})(\\d+)";
             Pattern r = Pattern.compile(pattern);
@@ -63,7 +67,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             String fullName = attributes.getOrDefault("given_name", "").toString();
             String userName = attributes.getOrDefault("name", "").toString();
             String avatar_url = attributes.getOrDefault("picture", "").toString();
-            String organization = attributes.getOrDefault("hd", "").toString();
+            
             String input = attributes.getOrDefault("family_name", "").toString();
             String[] parts = input.replace("(", "").replace(")", "").split(" ");
             String term = parts[0];
@@ -75,7 +79,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             // System.out.println(formatter.format(date));
             // Collection<? extends GrantedAuthority> authority = authentication.getAuthorities();
             
-            if("fpt.edu.vn".equals(organization) || "fe.edu.vn".equals(organization)){
+           
             credentialService.findByEmail(email)
                              .ifPresentOrElse(user -> {
                                 DefaultOAuth2User newUser = new DefaultOAuth2User(List.of(new SimpleGrantedAuthority(user.getRole().name())), attributes, "name");
@@ -132,11 +136,23 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                                 SecurityContextHolder.getContext().setAuthentication(securityAuth);
                              });
             }
+            else{
+                checkLogin = false;
+            }
         }
-        this.setAlwaysUseDefaultTargetUrl(true);
+        if(checkLogin){
+            this.setAlwaysUseDefaultTargetUrl(true);
         //Redirect to front end page
         // this.setDefaultTargetUrl("http://localhost:5173");
         this.setDefaultTargetUrl(frontendUrl);
         super.onAuthenticationSuccess(request, response, authentication);
+        }
+        else{
+            this.setAlwaysUseDefaultTargetUrl(true);
+        //Redirect to front end page
+        // this.setDefaultTargetUrl("http://localhost:5173");
+        this.setDefaultTargetUrl(frontendUrl+"/login");
+        super.onAuthenticationSuccess(request, response, null);
+        }
     }
 }
